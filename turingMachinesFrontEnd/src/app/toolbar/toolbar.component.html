@@ -1,0 +1,20 @@
+<mat-toolbar>
+  <button mat-icon-button>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>My Turing Machine</span>
+  <span class="spacer"></span>
+  <button mat-icon-button (click)="createState()">
+    <mat-icon>add_circle_outline</mat-icon>
+  </button>
+  <button mat-icon-button (click)="onPlayClicked()">
+    <mat-icon>play_circle_outline</mat-icon>
+  </button>
+  <button mat-icon-button>
+    <mat-icon>pause_circle_outline</mat-icon>
+  </button>
+  <button mat-icon-button>
+    <mat-icon>replay</mat-icon>
+  </button>
+  <span class="spacer"></span>
+</mat-toolbar>
