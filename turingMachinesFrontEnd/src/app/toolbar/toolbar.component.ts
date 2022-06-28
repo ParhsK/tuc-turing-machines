@@ -13,8 +13,8 @@ export class ToolbarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  createState(): void {
-    console.log("hi");
+  onAddClicked(): void {
+    this.turingMachine.addState();
   }
 
   onPlayClicked(): void {

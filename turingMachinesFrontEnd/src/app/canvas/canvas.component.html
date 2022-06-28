@@ -1,1 +1,1 @@
-<p>canvas works!</p>
+<button mat-button (click)="openDialog(state.id)" *ngFor="let state of this.turingMachine.states">{{state.id}}</button>

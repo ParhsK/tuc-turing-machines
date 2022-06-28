@@ -1,0 +1,32 @@
+<div class="button-container">
+  <h1 style="text-align:center">id:{{state?.id}}</h1>
+  <mat-radio-group>
+    <h2>State Type</h2>
+    <mat-radio-button value="1">First</mat-radio-button>
+    <mat-radio-button value="2">Middle</mat-radio-button>
+    <mat-radio-button value="3">Final</mat-radio-button>
+  </mat-radio-group>
+  <br>
+  <div class="actions-container">
+    <h2>Actions: <span class="actions">{{state?.actions}}</span></h2>
+  </div>
+  <div class="actions-button-container">
+    <button mat-button>R</button>
+    <button mat-button>L</button>
+    <button mat-button>X</button>
+  </div>
+  <div class="deltas-container">
+    <h2>Deltas</h2>
+    <li class="delta" *ngFor="let delta of deltas">
+      {{delta.prevStateId}} <mat-icon>arrow_right_alt</mat-icon> {{delta.newStateId}} / {{delta.input}}
+      <button mat-button (click)="onDeleteClicked(delta)" class="add-button-container"><mat-icon>highlight_off</mat-icon></button>
+    </li>
+  </div>
+  <mat-form-field>
+    <input matInput [(ngModel)]="input" placeholder="Input">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [(ngModel)]="nextStateId" placeholder="Next state">
+  </mat-form-field>
+  <button mat-button (click)="onAddClicked()" class="button-container"><mat-icon>add</mat-icon></button>
+</div>

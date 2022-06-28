@@ -8,9 +8,10 @@ import { TuringMachineService } from '../turing-machine.service';
 })
 export class MainPageComponent implements OnInit {
 
-  constructor() {}
+  constructor(private turingMachine: TuringMachineService) { }
 
   ngOnInit(): void {
+    this.turingMachine.fakeInitialize();
   }
 
 }
