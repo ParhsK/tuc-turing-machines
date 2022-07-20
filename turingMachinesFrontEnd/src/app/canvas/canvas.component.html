@@ -1,1 +1,16 @@
-<button mat-button (click)="openDialog(state.id)" *ngFor="let state of this.turingMachine.states">{{state.id}}</button>
+<!-- <button
+  mat-button
+  (click)="openDialog(state.id)"
+  *ngFor="let state of turingMachine.states">{{state.id}}
+</button> -->
+<div class="state-boundary">
+  <app-state-card
+    *ngFor="let state of turingMachine.states"
+    [state]="state"
+    (click)="openDialog(state.id)"
+    cdkDrag
+    (cdkDragMoved)="onDragMove()"
+  ></app-state-card>
+</div>
+<button (click)="redrawAllLines()">REDRAW!</button>
+<app-tape class="tape"></app-tape>

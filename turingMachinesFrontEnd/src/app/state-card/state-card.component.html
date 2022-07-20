@@ -1,0 +1,4 @@
+<div
+  [ngClass]="{'current-state': turingMachine.currentState?.id === state?.id}"
+  class="state"
+>{{state?.actions?.join('')}}</div>

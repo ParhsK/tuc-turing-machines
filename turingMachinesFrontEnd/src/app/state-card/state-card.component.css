@@ -1,0 +1,15 @@
+:host {
+  display: inline-block;
+}
+
+.state {
+  cursor: grab;
+  font-size: 30px;
+  font-weight: 700;
+  height: 40px;
+  padding: 10px;
+}
+
+.current-state {
+  color: red;
+}

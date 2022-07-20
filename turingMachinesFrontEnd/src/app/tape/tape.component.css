@@ -1,0 +1,14 @@
+.tape {
+  display: flex;
+}
+
+.character {
+  font-size: 160%;
+  width: 40px;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.selected-character {
+  background-color:crimson;
+}

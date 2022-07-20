@@ -1,0 +1,5 @@
+<div class="tape" (click)="openDialog()">
+  <h2>|></h2>
+  <div class="character" *ngFor="let character of turingMachine.tape; let i = index"
+    [ngClass]="{'selected-character': turingMachine.head === i}">{{character}}</div>
+</div>

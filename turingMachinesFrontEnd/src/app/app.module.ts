@@ -8,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule  } from '@angular/material/form-field';
-
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatSelectModule } from '@angular/material/select';
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { MainPageComponent } from './main-page/main-page.component';
@@ -17,14 +18,19 @@ import { TuringMachineService } from './turing-machine.service';
 import { CanvasComponent } from './canvas/canvas.component';
 import { StateDataComponent } from './state-data/state-data.component';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import { TapeComponent } from './tape/tape.component';
+import { TapeDataComponent } from './tape-data/tape-data.component';
+import { StateCardComponent } from './state-card/state-card.component';
 @NgModule({
   declarations: [
     AppComponent,
     ToolbarComponent,
     MainPageComponent,
     CanvasComponent,
-    StateDataComponent
+    StateDataComponent,
+    TapeComponent,
+    TapeDataComponent,
+    StateCardComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +44,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatRadioModule,
     MatInputModule,
     MatFormFieldModule,
-
+    DragDropModule,
+    MatSelectModule,
   ],
   providers: [TuringMachineService],
   bootstrap: [AppComponent]

@@ -1,8 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TuringMachineService } from '../turing-machine.service';
-import { Delta, State } from '../utils';
-import { MatInputModule } from '@angular/material/input';
+import { Delta, State, StateType } from '../utils';
 
 @Component({
   selector: 'app-state-data',
@@ -15,24 +14,43 @@ export class StateDataComponent implements OnInit {
   deltas: Delta[] = [];
   input: string = '';
   nextStateId?: number;
+  stateTypes: StateType[] = [
+    StateType.INITIAL_STATE,
+    StateType.MIDDLE_STATE,
+    StateType.FINAL_STATE
+  ];
 
-  constructor(@Inject (MAT_DIALOG_DATA) public data: number, public dialogRef: MatDialogRef<StateDataComponent>, public turingMachine: TuringMachineService) { }
+  constructor(
+    @Inject (MAT_DIALOG_DATA) public data: number,
+    public dialogRef: MatDialogRef<StateDataComponent>,
+    public turingMachine: TuringMachineService
+  ) {}
 
   ngOnInit(): void {
-    this.state = this.turingMachine.getStateById(this.data);
-    this.turingMachine.deltas$.subscribe((deltas) => { this.deltas = this.turingMachine.getDeltasById(this.data); });
-    this.deltas = this.turingMachine.getDeltasById(this.data);
+    this.turingMachine.states$.subscribe((states) => {
+      this.state = this.turingMachine.getStateById(this.data);
+    });
+    this.turingMachine.deltas$.subscribe((deltas) => {
+      this.deltas = this.turingMachine.getDeltasById(this.data);
+    });
   }
 
-  onAddClicked(): void {
+  onDeltaAddClicked(): void {
     if (this.nextStateId === undefined){
       throw Error('undefined next state id');
     }
-    this.turingMachine.addDelta(this.state!.id, this.input, this.nextStateId);
+    this.turingMachine.addDelta(this.state!.id, this.input.split(' '), this.nextStateId);
   }
 
-  onDeleteClicked(delta: Delta): void {
-    console.log(delta.prevStateId, delta.input, delta.newStateId)
+  onDeltaDeleteClicked(delta: Delta): void {
     this.turingMachine.deleteDelta(delta.prevStateId, delta.input, delta.newStateId);
+  }
+
+  onActionClicked(stateId: number, action: string): void {
+    this.turingMachine.addAction(stateId, action);
+  }
+
+  onActionDeleteClicked(stateId: number): void {
+    this.turingMachine.deleteAction(stateId);
   }
 }
