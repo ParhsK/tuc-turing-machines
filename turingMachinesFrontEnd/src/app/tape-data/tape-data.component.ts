@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TuringMachineService } from '../turing-machine.service';
+import { EMPTY_INPUT,EMPTY_DISPLAY_CHARACTER } from '../utils';
 
 @Component({
   selector: 'app-tape-data',
@@ -10,9 +11,18 @@ export class TapeDataComponent implements OnInit {
 
   inputSymbol: string = '';
   tape: Array<string> = [];
+
+
   constructor(public turingMachine: TuringMachineService) { }
 
   ngOnInit(): void {
+  }
+
+  replaceEmptyCharacter(character: string): string {
+    if (character == EMPTY_INPUT) {
+      return EMPTY_DISPLAY_CHARACTER
+    }
+    return character
   }
 
   onAddClicked(symbol: string): void {
@@ -42,5 +52,9 @@ export class TapeDataComponent implements OnInit {
 
   onDeleteFromTapeClicked(): void {
     this.turingMachine.deleteFromTape();
+  }
+
+  onEmptyTapeClicked(): void {
+    this.turingMachine.emptyTape();
   }
 }

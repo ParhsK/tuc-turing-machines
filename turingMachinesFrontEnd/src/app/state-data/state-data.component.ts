@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TuringMachineService } from '../turing-machine.service';
-import { Delta, State, StateType } from '../utils';
+import { Delta, replaceEmptyCharacter, State, StateType } from '../utils';
 
 @Component({
   selector: 'app-state-data',
@@ -19,6 +19,8 @@ export class StateDataComponent implements OnInit {
     StateType.MIDDLE_STATE,
     StateType.FINAL_STATE
   ];
+
+  public replaceEmptyCharacter = (arr: Array<string>) => arr.map(c => replaceEmptyCharacter(c))
 
   constructor(
     @Inject (MAT_DIALOG_DATA) public data: number,
@@ -39,7 +41,8 @@ export class StateDataComponent implements OnInit {
     if (this.nextStateId === undefined){
       throw Error('undefined next state id');
     }
-    this.turingMachine.addDelta(this.state!.id, this.input.split(' '), this.nextStateId);
+    console.log(this.state!.id, this.input.split(''), this.nextStateId)
+    this.turingMachine.addDelta(this.state!.id, this.input.split(''), this.nextStateId);
   }
 
   onDeltaDeleteClicked(delta: Delta): void {
@@ -53,4 +56,8 @@ export class StateDataComponent implements OnInit {
   onActionDeleteClicked(stateId: number): void {
     this.turingMachine.deleteAction(stateId);
   }
+
+  // onStateDeleteClicked(stateId: number): void {
+  //   this.turingMachine.deleteState(stateId);
+  // }
 }

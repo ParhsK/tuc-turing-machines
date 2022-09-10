@@ -15,6 +15,7 @@ export class ToolbarComponent implements OnInit {
 
   onAddClicked(): void {
     this.turingMachine.addState();
+
   }
 
   onPlayClicked(): void {

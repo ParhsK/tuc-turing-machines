@@ -20,3 +20,12 @@ mat-radio-button {
 .actions {
   font-weight: normal;
 }
+
+.actions-button-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.actions-button-container:last-child {
+  margin-left: auto;
+}

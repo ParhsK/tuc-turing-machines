@@ -2,11 +2,12 @@
 <mat-form-field>
   <input matInput [(ngModel)]="inputSymbol" placeholder="Insert symbol">
 </mat-form-field>
-<button mat-button (click)="onAddClicked(inputSymbol)" class="add-button"><mat-icon>add</mat-icon></button>
+<button mat-button (click)="onAddClicked(inputSymbol)" class="add-button"><mat-icon>add_circle_outline</mat-icon></button>
 <ul>
-  <li *ngFor="let symbol of this.turingMachine.alphabet">{{symbol}}
+  <li *ngFor="let symbol of this.turingMachine.alphabet">{{ (symbol) }}
     <button mat-button (click)="onDeleteClicked(symbol)" class="delete-button"><mat-icon>highlight_off</mat-icon></button>
-    <button mat-button (click)="onAddToTapeClicked(symbol)" class="add-button"><mat-icon>add</mat-icon></button>
+    <button mat-button (click)="onAddToTapeClicked(symbol)" class="add-button"><mat-icon>add_circle_outline</mat-icon></button>
   </li>
 </ul>
-<h2>Tape<button mat-button (click)="onDeleteFromTapeClicked()" class="delete-button"><mat-icon>highlight_off</mat-icon></button></h2>
+<h3>Tape Pop<button mat-button (click)="onDeleteFromTapeClicked()" class="delete-button"><mat-icon>backspace</mat-icon></button></h3>
+<h3>Empty Tape<button mat-button (click)="onEmptyTapeClicked()" class="delete-button"><mat-icon>delete</mat-icon></button></h3>

@@ -1,4 +1,4 @@
 <div
   [ngClass]="{'current-state': turingMachine.currentState?.id === state?.id}"
   class="state"
->{{state?.actions?.join('')}}</div>
+><span *ngIf="state?.type === StateType.INITIAL_STATE">></span>{{state?.actions?.join('')}}</div>

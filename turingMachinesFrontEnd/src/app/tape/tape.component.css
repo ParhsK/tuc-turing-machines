@@ -2,11 +2,20 @@
   display: flex;
 }
 
+.arrow-container {
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  transform: rotate(90deg);
+}
+
 .character {
-  font-size: 160%;
   width: 40px;
   border: 1px solid black;
   text-align: center;
+  font: 400 20px/40px Roboto;
 }
 
 .selected-character {

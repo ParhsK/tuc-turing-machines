@@ -1,5 +1,5 @@
 <div class="tape" (click)="openDialog()">
-  <h2>|></h2>
+  <div class="arrow-container"><mat-icon class="arrow">change_history</mat-icon></div>
   <div class="character" *ngFor="let character of turingMachine.tape; let i = index"
-    [ngClass]="{'selected-character': turingMachine.head === i}">{{character}}</div>
+    [ngClass]="{'selected-character': turingMachine.head === i}">{{replaceEmptyCharacter(character)}}</div>
 </div>

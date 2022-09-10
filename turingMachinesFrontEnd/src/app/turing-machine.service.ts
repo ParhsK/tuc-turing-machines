@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { Delta, sleep, State, StateType } from './utils';
+import { EventEmitter, Injectable } from '@angular/core';
+import { BehaviorSubject, EMPTY, Subject } from 'rxjs';
+import { Delta, sleep, State, StateType, EMPTY_INPUT, Action } from './utils';
 
-const EMPTY_INPUT = 'u';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +15,8 @@ export class TuringMachineService {
   private deltaChange$ = new BehaviorSubject<Array<Delta>>([]);
   public deltas$ = this.deltaChange$.asObservable();
 
+  public newStateEmitter = new EventEmitter();
+
   input = '';
   tape: Array<string> = [];
   head = 0;
@@ -23,7 +24,11 @@ export class TuringMachineService {
   paused = false;
   alphabet = new Set<string>();
 
-  constructor() {}
+  constructor() {
+    this.alphabet.add(' ')
+    this.alphabet.add('a')
+    this.alphabet.add('b')
+  }
 
   set states(val: Array<State>) {
     this._states = val;
@@ -49,16 +54,16 @@ export class TuringMachineService {
 
   fakeInitialize(): void {
     const states = [
-       new State(0, StateType.INITIAL_STATE, ['L']),
-       new State(1, StateType.MIDDLE_STATE, [EMPTY_INPUT, 'R', 'x', 'L']),
-       new State(2, StateType.FINAL_STATE, ['Ru', 'Ru']),
+      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT]),
+      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT]),
+      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY]),
     ];
     const deltas = [
-       new Delta(0, ['a', 'b'], 1),
-       new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
-       new Delta(0, [EMPTY_INPUT], 2 , 'bottom', 'top'),
+      new Delta(0, ['a', 'b'], 1),
+      new Delta(1, ['a', 'b', ' '], 0, 'top', 'top'),
+      new Delta(0, [' '], 2, 'bottom', 'top'),
     ];
-     this.newTape(['', 'a', 'a', 'b', 'a', 'b', '']);
+    this.newTape([' ', 'a', 'a', 'b', 'a', 'b', ' ']);
     this.initializeMachine(states, deltas);
     this.head = 6;
   }
@@ -73,7 +78,10 @@ export class TuringMachineService {
     console.log('Current state id is', currentState.id);
     const formattedInput = input || EMPTY_INPUT;
     const currentDelta = this.deltas.find((delta) => {
-      if (delta.prevStateId === currentState.id && delta.input.includes(formattedInput)) {
+      if (
+        delta.prevStateId === currentState.id &&
+        delta.input.includes(formattedInput)
+      ) {
         return true;
       }
       return false;
@@ -115,12 +123,17 @@ export class TuringMachineService {
 
   addState(): void {
     const newId = this.getMaxStateId();
-    const newState = new State(newId, StateType.MIDDLE_STATE, ['']);
+    const newState = new State(newId, StateType.MIDDLE_STATE, []);
     this.states.push(newState);
     this.updateStatesSubject();
+    this.newStateEmitter.emit(newState.id)
   }
 
-  addDelta(currentStateId: number, input: Array<string>, newStateId: number): void {
+  addDelta(
+    currentStateId: number,
+    input: Array<string>,
+    newStateId: number
+  ): void {
     const newDelta = new Delta(currentStateId, input, newStateId);
     const newDeltas = this.deltas;
     newDeltas.push(newDelta);
@@ -162,6 +175,11 @@ export class TuringMachineService {
     this.deltas = newDeltas;
   }
 
+  // deleteState(stateId: number): void{
+  //   const state = this.getStateById(stateId);
+
+  // }
+
   getStateById(stateId: number): State | undefined {
     return this.states.find((state: State) => {
       if (state.id === stateId) {
@@ -196,18 +214,22 @@ export class TuringMachineService {
 
   addToTape(symbol: string) {
     if (this.tape.length < 1) {
-      this.tape.push('');
+      this.tape.push(' ');
       this.tape.push(symbol);
-      this.tape.push('');
+      this.tape.push(' ');
     } else {
       this.tape.pop();
       this.tape.push(symbol);
-      this.tape.push('');
+      this.tape.push(' ');
     }
   }
 
   deleteFromTape() {
     this.tape.pop();
+  }
+
+  emptyTape() {
+    this.tape.splice(0, this.tape.length)
   }
 
   moveTape(): void {
@@ -224,7 +246,7 @@ export class TuringMachineService {
           break;
         case 'Ru':
           for (let i = this.head; i < this.tape.length; i++) {
-            if (this.tape[i] === '') {
+            if (this.tape[i] === ' ') {
               this.head = i;
               break;
             }
@@ -232,29 +254,47 @@ export class TuringMachineService {
           break;
         case 'Lu':
           for (let i = this.head; i <= 0; i--) {
-            if (this.tape[i] === '') {
+            if (this.tape[i] === ' ') {
+              this.head = i;
+              break;
+            }
+          }
+          throw Error('unable to move further left, empty symbol was not found');
+          break;
+        case '\u2294':
+          this.tape[this.head] = ' ';
+          break;
+        case 'x':
+          this.tape[this.head] = this.input;
+          break;
+        case 'Rx':
+          for (let i = this.head; i < this.tape.length; i++) {
+            if (this.tape[i] === this.input) {
               this.head = i;
               break;
             }
           }
           break;
-        case 'u':
-          this.tape[this.head] = '';
+        case 'Lx':
+          for (let i = this.head; i <= 0; i--) {
+            if (this.tape[i] === this.input) {
+              this.head = i;
+              break;
+            }
+          }
+          throw Error('unable to move further left, symbol was not found');
           break;
-        case 'x':
-          this.tape[this.head] = this.input;
-          break;
-        }
+      }
     });
     if (this.head > this.tape.length - 1) {
       const currentLength = this.tape.length;
       const targetLength = this.head + 1;
       for (let i = currentLength; i <= targetLength; i++) {
-        this.tape.push('');
+        this.tape.push(' ');
       }
     }
-    if (this.tape[this.tape.length - 1] !== '') {
-      this.tape.push('');
+    if (this.tape[this.tape.length - 1] !== ' ') {
+      this.tape.push(' ');
     }
     console.log(`Head is now at ${this.head}`);
   }
@@ -265,7 +305,7 @@ export class TuringMachineService {
       .reduce((allDeltaInputs: Array<string>, delta: Delta) => {
         delta.input.forEach((inputSymbol) => {
           allDeltaInputs.push(inputSymbol);
-        })
+        });
         return allDeltaInputs;
       }, [])
       .includes(symbol);

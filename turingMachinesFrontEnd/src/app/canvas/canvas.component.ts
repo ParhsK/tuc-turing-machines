@@ -10,7 +10,6 @@ import { TuringMachineService } from '../turing-machine.service';
 import { MatDialog } from '@angular/material/dialog';
 import { StateDataComponent } from '../state-data/state-data.component';
 import { StateCardComponent } from '../state-card/state-card.component';
-import { Delta } from '../utils';
 
 declare var LeaderLine: any;
 
@@ -28,7 +27,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.turingMachine.newStateEmitter.subscribe((stateId) => {
+      this.openDialog(stateId);
+    });
+  }
 
   ngAfterViewInit(): void {
     this.redrawAllLines();
@@ -40,13 +43,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     });
     this.deltaLines = [];
     this.turingMachine.deltas.forEach((delta) => {
+      console.log(delta)
       const startingElement = this.stateCards?.find((item) => {
         return item.state?.id === delta.prevStateId;
       })?.element.nativeElement;
       const endingElement = this.stateCards?.find((item) => {
         return item.state?.id === delta.newStateId;
       })?.element.nativeElement;
-      console.log(startingElement, endingElement);
+      console.log(startingElement, endingElement)
       const line = new LeaderLine(startingElement, endingElement, {
         color: 'black',
         path: 'grid',
@@ -58,7 +62,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           lineOffset: 50
         }),
       });
-      console.log(delta.input);
       this.deltaLines.push(line);
     });
   }

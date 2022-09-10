@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { TuringMachineService } from '../turing-machine.service';
-import { State } from '../utils';
+import { State, StateType } from '../utils';
 
 @Component({
   selector: 'app-state-card',
@@ -8,6 +8,7 @@ import { State } from '../utils';
   styleUrls: ['./state-card.component.css']
 })
 export class StateCardComponent implements OnInit {
+  public StateType = StateType
 
   @Input() state?: State;
   constructor(public turingMachine: TuringMachineService, public element: ElementRef) { }
