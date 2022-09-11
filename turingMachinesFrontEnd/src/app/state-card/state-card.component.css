@@ -1,15 +1,52 @@
 :host {
   display: inline-block;
+  position: relative;
+  min-width: 50px
 }
 
 .state {
-  cursor: grab;
   font-size: 30px;
   font-weight: 700;
   height: 40px;
   padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .current-state {
   color: red;
+}
+
+.state-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 187, 204, 0.301);
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.state-overlay:hover {
+  opacity: 1;
+}
+
+.state-move {
+  width: 50%;
+  cursor: move;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.state-edit {
+  width: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

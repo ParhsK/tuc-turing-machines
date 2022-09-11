@@ -4,7 +4,7 @@
 </mat-form-field>
 <button mat-button (click)="onAddClicked(inputSymbol)" class="add-button"><mat-icon>add_circle_outline</mat-icon></button>
 <ul>
-  <li *ngFor="let symbol of this.turingMachine.alphabet">{{ (symbol) }}
+  <li *ngFor="let symbol of this.turingMachine.alphabet">{{ replaceEmptyCharacter(symbol) }}
     <button mat-button (click)="onDeleteClicked(symbol)" class="delete-button"><mat-icon>highlight_off</mat-icon></button>
     <button mat-button (click)="onAddToTapeClicked(symbol)" class="add-button"><mat-icon>add_circle_outline</mat-icon></button>
   </li>

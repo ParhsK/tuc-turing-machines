@@ -57,7 +57,7 @@ export class StateDataComponent implements OnInit {
     this.turingMachine.deleteAction(stateId);
   }
 
-  // onStateDeleteClicked(stateId: number): void {
-  //   this.turingMachine.deleteState(stateId);
-  // }
+  onStateDeleteClicked(stateId: number): void {
+    this.turingMachine.deleteState(stateId);
+  }
 }

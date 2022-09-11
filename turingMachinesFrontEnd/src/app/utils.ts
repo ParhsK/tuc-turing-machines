@@ -2,7 +2,9 @@ export class State {
   constructor(
     public id: number,
     public type: StateType,
-    public actions: Array<string>
+    public actions: Array<string>,
+    public translateX?: string,
+    public translateY?: string,
   ) {}
 }
 

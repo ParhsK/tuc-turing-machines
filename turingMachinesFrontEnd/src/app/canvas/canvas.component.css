@@ -5,3 +5,7 @@
   transform: translate(-50%, -50%);
   margin: 0 auto;
 }
+
+.edgepath {
+  marker-end: url(https://turingmachine.io/#arrowhead);
+}

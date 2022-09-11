@@ -7,10 +7,10 @@
   <app-state-card
     *ngFor="let state of turingMachine.states"
     [state]="state"
-    (click)="openDialog(state.id)"
     cdkDrag
     (cdkDragMoved)="onDragMove()"
+    (cdkDragReleased)="onDragRelease(state.id)"
+    [ngStyle]="{'transform': 'translate(' + state.translateX + 'px, ' + state.translateY + 'px)'}"
   ></app-state-card>
 </div>
-<button (click)="redrawAllLines()">REDRAW!</button>
 <app-tape class="tape"></app-tape>

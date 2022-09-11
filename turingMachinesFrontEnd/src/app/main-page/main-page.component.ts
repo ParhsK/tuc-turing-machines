@@ -11,7 +11,8 @@ export class MainPageComponent implements OnInit {
   constructor(private turingMachine: TuringMachineService) { }
 
   ngOnInit(): void {
-    this.turingMachine.fakeInitialize();
+    this.turingMachine.loadMachineState();
+    // this.turingMachine.intializeShiftRight();
   }
 
 }

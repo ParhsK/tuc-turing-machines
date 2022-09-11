@@ -1,4 +1,13 @@
-<div
-  [ngClass]="{'current-state': turingMachine.currentState?.id === state?.id}"
-  class="state"
-><span *ngIf="state?.type === StateType.INITIAL_STATE">></span>{{state?.actions?.join('')}}</div>
+<div class="state-container">
+  <div
+    [ngClass]="{'current-state': turingMachine.currentState?.id === state?.id}"
+    class="state"
+  >
+    <span *ngIf="state?.type === StateType.INITIAL_STATE"></span>
+    <span>{{state?.actions?.join('')}}</span>
+  </div>
+  <div class="state-overlay">
+    <div class="state-move" cdkDragHandle><mat-icon>drag_indicator</mat-icon></div>
+    <div class="state-edit" (click)="turingMachine.stateDialogOpen.emit(state?.id)"><mat-icon>edit</mat-icon></div>
+  </div>
+</div>
