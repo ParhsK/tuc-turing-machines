@@ -12,6 +12,7 @@ export class TapeDataComponent implements OnInit {
   inputSymbol: string = '';
   tape: Array<string> = [];
 
+
   public replaceEmptyCharacter = replaceEmptyCharacter;
 
   constructor(public turingMachine: TuringMachineService) { }
@@ -50,5 +51,21 @@ export class TapeDataComponent implements OnInit {
 
   onEmptyTapeClicked(): void {
     this.turingMachine.emptyTape();
+  }
+
+  onHeadToStartClicked(): void {
+    this.turingMachine.moveHeadToStart();
+  }
+
+  onHeadToEndClicked(): void {
+    this.turingMachine.moveHeadToEnd();
+  }
+
+  onHeadRightClicked(): void {
+    this.turingMachine.moveHeadRight();
+  }
+
+  onHeadLeftClicked(): void {
+    this.turingMachine.moveHeadLeft();
   }
 }

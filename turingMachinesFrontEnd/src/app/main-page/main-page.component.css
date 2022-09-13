@@ -37,3 +37,9 @@
   margin: 20px;
   font-size: 30px;
 }
+
+.downloadButton {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}

@@ -2,8 +2,7 @@
   <h1 style="text-align:center">id:{{state?.id}}</h1>
   <mat-radio-group *ngIf="state" [(ngModel)]="state.type">
     <h2>State Type</h2>
-    <mat-radio-button class="state-radio-button"
-     *ngFor="let stateType of stateTypes" [value]="stateType">{{stateType}}
+    <mat-radio-button class="state-radio-button" *ngFor="let stateType of stateTypes" [value]="stateType">{{stateType}}
     </mat-radio-button>
   </mat-radio-group>
   <br>
@@ -19,13 +18,18 @@
     <button mat-button (click)="onActionClicked(state!.id, 'L\u2294')">L{{'\u2294'}}</button>
     <button mat-button (click)="onActionClicked(state!.id, 'Rx')">Rx</button>
     <button mat-button (click)="onActionClicked(state!.id, 'Lx')">Lx</button>
-    <button mat-button (click)="onActionDeleteClicked(state!.id)"><mat-icon>backspace</mat-icon></button>
+    <button mat-button (click)="onActionDeleteClicked(state!.id)">
+      <mat-icon>backspace</mat-icon>
+    </button>
   </div>
   <div class="deltas-container">
     <h2>Transition Functions</h2>
     <li class="delta" *ngFor="let delta of deltas">
-      {{delta.prevStateId}} <mat-icon>arrow_right_alt</mat-icon> {{delta.newStateId}} / {{ replaceEmptyCharacter(delta.input) }}
-      <button mat-button (click)="onDeltaDeleteClicked(delta)" class="add-button-container"><mat-icon>delete</mat-icon></button>
+      {{delta.prevStateId}} <mat-icon>arrow_right_alt</mat-icon> {{delta.newStateId}} / {{
+      replaceEmptyCharacter(delta.input) }}
+      <button mat-button (click)="onDeltaDeleteClicked(delta)" class="add-button-container">
+        <mat-icon>delete</mat-icon>
+      </button>
       <mat-form-field>
         <mat-label>Start anchor</mat-label>
         <mat-select [(ngModel)]="delta.startSocket">
@@ -52,7 +56,11 @@
   <mat-form-field>
     <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next state">
   </mat-form-field>
-  <h2>Add transition function(δ)<button mat-button (click)="onDeltaAddClicked()" class="button-container"><mat-icon>add</mat-icon></button>
+  <h2>Add transition function(δ)<button mat-button (click)="onDeltaAddClicked()" class="button-container">
+      <mat-icon>add</mat-icon>
+    </button>
   </h2>
 </div>
-<button mat-button (click)="onStateDeleteClicked(state?.id!)" class="add-button-container"><mat-icon>delete</mat-icon></button>
+<button mat-button (click)="onStateDeleteClicked(state?.id!)" class="add-button-container">
+  <mat-icon>delete</mat-icon>
+</button>

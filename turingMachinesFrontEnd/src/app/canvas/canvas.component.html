@@ -6,6 +6,7 @@
 <div class="state-boundary">
   <app-state-card
     *ngFor="let state of turingMachine.states"
+    [id]="state.id"
     [state]="state"
     cdkDrag
     (cdkDragMoved)="onDragMove()"

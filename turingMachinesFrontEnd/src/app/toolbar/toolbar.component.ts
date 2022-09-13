@@ -21,4 +21,13 @@ export class ToolbarComponent implements OnInit {
   onPlayClicked(): void {
     this.turingMachine.machineRun();
   }
+
+  onStepRunClicked(): void {
+    this.turingMachine.stepRun();
+  }
+
+  onShiftMachineClicked(): void {
+    // this.turingMachine.resetAll();
+    this.turingMachine.intializeShiftRight();
+  }
 }

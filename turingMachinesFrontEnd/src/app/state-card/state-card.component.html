@@ -3,7 +3,7 @@
     [ngClass]="{'current-state': turingMachine.currentState?.id === state?.id}"
     class="state"
   >
-    <span *ngIf="state?.type === StateType.INITIAL_STATE"></span>
+    <span *ngIf="state?.type === StateType.INITIAL_STATE">></span>
     <span>{{state?.actions?.join('')}}</span>
   </div>
   <div class="state-overlay">

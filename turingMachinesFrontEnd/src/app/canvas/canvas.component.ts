@@ -39,13 +39,23 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.redrawAllLines();
+    this.stateCards?.changes.subscribe(() => {
+      this.removeAllLines();
+      setTimeout(() => {
+        this.redrawAllLines();
+      }, 10);
+    })
   }
 
-  redrawAllLines(): void {
+  removeAllLines(): void {
     this.deltaLines.forEach((line) => {
       line.remove();
     });
     this.deltaLines = [];
+  }
+
+  redrawAllLines(): void {
+    this.removeAllLines();
     this.turingMachine.deltas.forEach((delta) => {
       const startingElement = this.stateCards?.find((item) => {
         return item.state?.id === delta.prevStateId;
@@ -53,6 +63,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       let endingElement = this.stateCards?.find((item) => {
         return item.state?.id === delta.newStateId;
       })?.element.nativeElement;
+
       if (delta.prevStateId === delta.newStateId) {
         // Hack for same element
         // https://github.com/anseki/leader-line/issues/181
@@ -72,6 +83,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.deltaLines.push(selfLine);
         return;
       }
+
       const line = new LeaderLine(startingElement, endingElement, {
         color: 'black',
         path: 'grid',

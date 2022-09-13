@@ -99,7 +99,6 @@ export class TuringMachineService {
     ];
     const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
     const head = 6;
-
     this.setAll(states, deltas, tape, head);
   }
 
@@ -115,14 +114,11 @@ export class TuringMachineService {
 
   setAll(states: Array<State>, deltas: Array<Delta>, tape: Array<string>, head = 0) {
     this.newTape(tape);
-    this.initializeMachine(states, deltas);
-    this.head = head;
-  }
-
-  initializeMachine(states: Array<State>, deltas: Array<Delta>): void {
     this.states = states;
     this.deltas = deltas;
     this.currentState = this.getInitialState();
+    this.head = head;
+    // this.redrawEmitter.emit();
   }
 
   getNextState(currentState: State, input: string): State {
@@ -154,6 +150,10 @@ export class TuringMachineService {
     this.input = this.tape[this.head];
     if (this.currentState === undefined) {
       throw Error('undefined current state');
+    }
+    if (this.currentState.type === StateType.FINAL_STATE) {
+      console.log('The machine has finished!')
+      return;
     }
     this.currentState = this.getNextState(this.currentState, this.input);
     console.log(`Step run ${this.currentState}`);
@@ -414,6 +414,30 @@ export class TuringMachineService {
     // })
     return this.states[0];
   }
+
+  moveHeadToStart(): void {
+    this.head = 0;
+  }
+
+  moveHeadToEnd(): void {
+    this.head = this.tape.length - 1;
+  }
+
+  moveHeadLeft(): void {
+    if (this.head === 0) {
+      throw Error('unable to move further left');
+    }
+    this.head--;
+  }
+
+  moveHeadRight(): void {
+    if (this.head >= this.tape.length - 1) {
+        this.tape.push(' ');
+        // this.head++;
+      }
+    this.head++;
+  }
+
 
   // Generate and download json with current state
   download() {

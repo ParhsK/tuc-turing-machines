@@ -15,4 +15,8 @@ export class MainPageComponent implements OnInit {
     // this.turingMachine.intializeShiftRight();
   }
 
+  onDownloadClicked(): void {
+    this.turingMachine.download();
+  }
+
 }
