@@ -26,8 +26,23 @@ export class ToolbarComponent implements OnInit {
     this.turingMachine.stepRun();
   }
 
+  onCopyingMachineClicked(): void {
+    // this.turingMachine.resetAll();
+    this.turingMachine.intializeCopyMachine();
+  }
+
   onShiftMachineClicked(): void {
     // this.turingMachine.resetAll();
-    this.turingMachine.intializeShiftRight();
+    this.turingMachine.intializeShiftRightMachine();
+  }
+
+  onDecisionMachineClicked(): void {
+    // this.turingMachine.resetAll();
+    this.turingMachine.intializeDecisionMachine();
+  }
+
+  onRecursiveMachineClicked(): void {
+    // this.turingMachine.resetAll();
+    this.turingMachine.intializeRecursiveMachine();
   }
 }

@@ -31,7 +31,7 @@ export enum Action {
   MOVE_LEFT = 'L',
   SEARCH_RIGHT_EMPTY = 'R\u2294',
   SEARCH_LEFT_EMPTY = 'L\u2294',
-  WRITE_X = 'x',
+  WRITE_X = 'X',
   SEARCH_RIGHT_X = 'Rx',
   SEARCH_LEFT_X = 'Lx',
 }

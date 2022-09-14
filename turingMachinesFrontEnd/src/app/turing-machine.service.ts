@@ -86,23 +86,6 @@ export class TuringMachineService {
     return JSON.parse(serializedState);
   }
 
-  intializeShiftRight(): void {
-    const states = [
-      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT], '693', '123'),
-      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT], '866', '123'),
-      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY], '532', '257'),
-    ];
-    const deltas = [
-      new Delta(0, ['a', 'b'], 1),
-      new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
-      new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
-    ];
-    const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
-    const head = 6;
-    this.setAll(states, deltas, tape, head);
-  }
-
-
   resetAll(): void {
     const states: Array<State> = [];
     const deltas: Array<Delta> = [];
@@ -156,7 +139,6 @@ export class TuringMachineService {
       return;
     }
     this.currentState = this.getNextState(this.currentState, this.input);
-    console.log(`Step run ${this.currentState}`);
     return;
   }
 
@@ -318,40 +300,46 @@ export class TuringMachineService {
   }
 
   moveTape(): void {
+    console.log(this.currentState?.actions);
     this.currentState?.actions.forEach((action) => {
       switch (action) {
-        case 'R':
+        case Action.MOVE_RIGHT:
           this.head++;
           break;
-        case 'L':
+        case Action.MOVE_LEFT:
           if (this.head === 0) {
             throw Error('unable to move further left');
           }
           this.head--;
           break;
-        case 'Ru':
+        case Action.SEARCH_RIGHT_EMPTY:
           for (let i = this.head; i < this.tape.length; i++) {
-            if (this.tape[i] === ' ') {
-              this.head = i;
+            if (this.tape[i + 1] === EMPTY_INPUT) {
+              this.head = i + 1;
               break;
             }
           }
           break;
-        case 'Lu':
-          for (let i = this.head; i <= 0; i--) {
-            if (this.tape[i] === ' ') {
-              this.head = i;
+        case Action.SEARCH_LEFT_EMPTY:
+          if ( this.head === 0 )  {
+            throw Error('unable to move further left, empty symbol was not found');
+          }
+          for (let i = this.head; i >= 0; i--) {
+            console.log(i);
+            if (this.tape[i - 1] === EMPTY_INPUT) {
+              this.head = i - 1;
+              console.log("mphka");
               break;
             }
           }
-          throw Error('unable to move further left, empty symbol was not found');
-        case '\u2294':
-          this.tape[this.head] = ' ';
           break;
-        case 'X':
+        case Action.WRITE_EMPTY:
+          this.tape[this.head] = EMPTY_INPUT;
+          break;
+        case Action.WRITE_X:
           this.tape[this.head] = this.input;
           break;
-        case 'Rx':
+        case Action.SEARCH_RIGHT_X:
           for (let i = this.head; i < this.tape.length; i++) {
             if (this.tape[i] === this.input) {
               this.head = i;
@@ -359,7 +347,7 @@ export class TuringMachineService {
             }
           }
           break;
-        case 'Lx':
+        case Action.SEARCH_LEFT_X:
           for (let i = this.head; i <= 0; i--) {
             if (this.tape[i] === this.input) {
               this.head = i;
@@ -437,6 +425,73 @@ export class TuringMachineService {
       }
     this.head++;
   }
+
+  intializeCopyMachine(): void {
+    const states = [
+      new State(0, StateType.INITIAL_STATE, [Action.SEARCH_LEFT_EMPTY], '393', '171'),
+      new State(1, StateType.MIDDLE_STATE, [Action.MOVE_RIGHT], '543', '171'),
+      new State(2, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY, Action.WRITE_X, Action.SEARCH_LEFT_EMPTY, Action.SEARCH_LEFT_EMPTY, Action.WRITE_X], '651', '171'),
+      new State(3, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY], '365', '302')
+    ];
+    const deltas = [
+      new Delta(0, ['a', 'b', EMPTY_INPUT], 1, 'right', 'left'),
+      new Delta(1, ['a', 'b'], 2, 'right', 'left'),
+      new Delta(2, ['a', 'b', EMPTY_INPUT], 1, 'right', 'top'),
+      new Delta(1, [EMPTY_INPUT], 3, 'bottom', 'top')
+    ];
+    const tape = [EMPTY_INPUT, 'a', 'b', 'a', EMPTY_INPUT, EMPTY_INPUT, EMPTY_INPUT];
+    const head = 4;
+    this.setAll(states, deltas, tape, head);
+  }
+
+  intializeShiftRightMachine(): void {
+    const states = [
+      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT], '693', '123'),
+      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT], '866', '123'),
+      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY], '532', '257'),
+    ];
+    const deltas = [
+      new Delta(0, ['a', 'b'], 1),
+      new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
+      new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
+    ];
+    const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
+    const head = 6;
+    this.setAll(states, deltas, tape, head);
+  }
+
+  intializeDecisionMachine(): void {
+    const states = [
+      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT], '693', '123'),
+      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT], '866', '123'),
+      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY], '532', '257'),
+    ];
+    const deltas = [
+      new Delta(0, ['a', 'b'], 1),
+      new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
+      new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
+    ];
+    const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
+    const head = 6;
+    this.setAll(states, deltas, tape, head);
+  }
+
+intializeRecursiveMachine(): void {
+    const states = [
+      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT], '693', '123'),
+      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT], '866', '123'),
+      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY], '532', '257'),
+    ];
+    const deltas = [
+      new Delta(0, ['a', 'b'], 1),
+      new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
+      new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
+    ];
+    const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
+    const head = 6;
+    this.setAll(states, deltas, tape, head);
+  }
+
 
 
   // Generate and download json with current state

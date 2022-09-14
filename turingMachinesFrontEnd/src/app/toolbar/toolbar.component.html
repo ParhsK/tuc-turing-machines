@@ -4,9 +4,19 @@
   </button>
   <span>My Turing Machine</span>
   <span class="spacer"></span>
-  <button mat-icon-button (click)="onShiftMachineClicked()">
-    <mat-icon>ShiftMachine</mat-icon>
+  <button (click)="onCopyingMachineClicked()">
+    <h2>CopyingMachine</h2>
   </button>
+  <button (click)="onShiftMachineClicked()">
+    <h2>RightShiftingMachine</h2>
+  </button>
+  <button (click)="onDecisionMachineClicked()">
+    <h2>DecidingMachine</h2>
+  </button>
+  <button (click)="onRecursiveMachineClicked()">
+    <h2>RecursiveMachine</h2>
+  </button>
+  <span class="spacer"></span>
   <button mat-icon-button (click)="onAddClicked()">
     <mat-icon>add_circle_outline</mat-icon></button>
   <span>Create new State</span>
