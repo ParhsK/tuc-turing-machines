@@ -19,18 +19,20 @@ export class StateDataComponent implements OnInit {
     StateType.MIDDLE_STATE,
     StateType.FINAL_STATE
   ];
+  stateActions: string = ''
 
   public replaceEmptyCharacter = (arr: Array<string>) => arr.map(c => replaceEmptyCharacter(c))
 
   constructor(
     @Inject (MAT_DIALOG_DATA) public data: number,
     public dialogRef: MatDialogRef<StateDataComponent>,
-    public turingMachine: TuringMachineService
+    public turingMachine: TuringMachineService,
   ) {}
 
   ngOnInit(): void {
     this.turingMachine.states$.subscribe((states) => {
       this.state = this.turingMachine.getStateById(this.data);
+      this.stateActions = this.state?.actions.join('') ?? '';
     });
     this.turingMachine.deltas$.subscribe((deltas) => {
       this.deltas = this.turingMachine.getDeltasById(this.data);

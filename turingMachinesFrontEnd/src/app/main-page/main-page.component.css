@@ -32,7 +32,7 @@
 }*/
 
 .grid-item-notes textarea {
-  width: calc(100% - 40px);
+  width: calc(100% - 50px);
   height: 100px;
   margin: 20px;
   font-size: 30px;

@@ -348,7 +348,7 @@ export class TuringMachineService {
         case '\u2294':
           this.tape[this.head] = ' ';
           break;
-        case 'x':
+        case 'X':
           this.tape[this.head] = this.input;
           break;
         case 'Rx':
