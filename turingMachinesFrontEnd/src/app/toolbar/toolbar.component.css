@@ -1,3 +1,31 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+.button {
+  transition-duration: 0.4s;
+  float: left;
+
+}
+
+.button:hover {
+  background-color: #0d79df; /* Green */
+  color: white;
+}
+
+.button2 {
+  transition-duration: 0.4s;
+  float: left;
+  background-color: #0d79df;
+  color: white
+}
+
+.button2:hover {
+  background-color: white; /* Green */
+  color: #0d79df;
+}
+
+.button3 {
+  color:#0373be;
+  border:0cm;
+}

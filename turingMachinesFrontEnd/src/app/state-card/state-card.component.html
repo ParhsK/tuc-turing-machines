@@ -4,6 +4,7 @@
     class="state"
   >
     <span *ngIf="state?.type === StateType.INITIAL_STATE">></span>
+    <span *ngIf="state?.actions?.length === 0">newState</span>
     <span>{{state?.actions?.join('')}}</span>
   </div>
   <div class="state-overlay">

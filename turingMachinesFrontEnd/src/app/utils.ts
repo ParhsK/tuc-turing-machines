@@ -19,6 +19,16 @@ export class Delta {
   }
 }
 
+export class MachineState {
+  constructor(
+    public states: Array<State> = [],
+    public deltas: Array<Delta> = [],
+    public tape: Array<string> = [],
+    public head: number = 0,
+    public text: string = '',
+  ) {}
+}
+
 export enum StateType {
   INITIAL_STATE = 'Initial',
   MIDDLE_STATE = 'Middle',
@@ -31,9 +41,12 @@ export enum Action {
   MOVE_LEFT = 'L',
   SEARCH_RIGHT_EMPTY = 'R\u2294',
   SEARCH_LEFT_EMPTY = 'L\u2294',
-  WRITE_X = 'X',
   SEARCH_RIGHT_X = 'Rx',
   SEARCH_LEFT_X = 'Lx',
+  WRITE_X = 'X',
+  MARK = 'd',
+  DECISION_YES = 'yes',
+  DECISION_NO = 'no'
 }
 
 export const EMPTY_INPUT = ' ';

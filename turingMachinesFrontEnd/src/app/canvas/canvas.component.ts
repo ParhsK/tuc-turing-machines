@@ -10,7 +10,7 @@ import { TuringMachineService } from '../turing-machine.service';
 import { MatDialog } from '@angular/material/dialog';
 import { StateDataComponent } from '../state-data/state-data.component';
 import { StateCardComponent } from '../state-card/state-card.component';
-import { replaceEmptyCharacter } from '../utils';
+import { Delta, replaceEmptyCharacter } from '../utils';
 
 declare var LeaderLine: any;
 
@@ -74,11 +74,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
           path: 'fluid',
           startSocket: 'top',
           endSocket: 'right',
-          middleLabel: LeaderLine.captionLabel(delta.input.map((c) => replaceEmptyCharacter(c)).join(', '), {
-            color: 'black',
-            // offset: [1000, 1000],
-            lineOffset: 50
-          }),
+          middleLabel: this.generateCaptionLabel(delta),
         });
         this.deltaLines.push(selfLine);
         return;
@@ -89,14 +85,39 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         path: 'grid',
         startSocket: delta.startSocket,
         endSocket: delta.endSocket,
-        startLabel: LeaderLine.captionLabel(delta.input.map((c) => replaceEmptyCharacter(c)).join(', '), {
-          color: 'black',
-          // offset: [1000, 1000],
-          lineOffset: 50
-        }),
+        startLabel: this.generateCaptionLabel(delta),
       });
       this.deltaLines.push(line);
     });
+  }
+
+  generateCaptionLabel(delta: Delta): string {
+    let missingCharacters = 0;
+    let lastMissingCharacter = undefined;
+    this.turingMachine.alphabet.forEach((character) => {
+      if (!delta.input.includes(character)) {
+        missingCharacters++;
+        lastMissingCharacter = character;
+      }
+    });
+
+    // Regular caption
+    let text = delta.input.map((c) => replaceEmptyCharacter(c)).join(', ');
+    // Empty caption if all characters are included
+    if (missingCharacters === 0) {
+      text = '';
+    }
+    // Different from caption if only one character is not included
+    else if (missingCharacters === 1 && lastMissingCharacter) {
+      text = 'NOT' + replaceEmptyCharacter(lastMissingCharacter);
+    }
+
+    const options = {
+      color: 'black',
+      // offset: [1000, 1000],
+      lineOffset: 50
+    };
+    return LeaderLine.captionLabel(text, options);
   }
 
   onDragMove(): void {

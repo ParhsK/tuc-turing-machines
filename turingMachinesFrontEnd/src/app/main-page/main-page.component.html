@@ -3,7 +3,7 @@
     <app-toolbar></app-toolbar>
   </div>
   <div class="grid-item-notes">
-    <textarea></textarea>
+    <textarea [(ngModel)]="turingMachine.text" (ngModelChange)="ls.setItem('text', turingMachine.text ?? '')"></textarea>
   </div>
   <div class="grid-item-main-board">
       <app-canvas></app-canvas>

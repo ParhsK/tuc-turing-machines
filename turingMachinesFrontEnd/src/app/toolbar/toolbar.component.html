@@ -1,30 +1,29 @@
 <mat-toolbar>
-  <button mat-icon-button>
-    <mat-icon>menu</mat-icon>
+  <button class="button2" (click)="onPlayClicked()">
+   <h3>MyTuringMachine</h3>
   </button>
-  <span>My Turing Machine</span>
   <span class="spacer"></span>
-  <button (click)="onCopyingMachineClicked()">
+  <button class="button" (click)="onCopyingMachineClicked()">
     <h2>CopyingMachine</h2>
   </button>
-  <button (click)="onShiftMachineClicked()">
+  <button class="button" (click)="onShiftMachineClicked()">
     <h2>RightShiftingMachine</h2>
   </button>
-  <button (click)="onDecisionMachineClicked()">
+  <button class="button" (click)="onDecisionMachineClicked()">
     <h2>DecidingMachine</h2>
   </button>
-  <button (click)="onRecursiveMachineClicked()">
+  <button class="button" (click)="onRecursiveMachineClicked()">
     <h2>RecursiveMachine</h2>
   </button>
   <span class="spacer"></span>
-  <button mat-icon-button (click)="onAddClicked()">
+  <button class="button3" (click)="onAddClicked()">
     <mat-icon>add_circle_outline</mat-icon></button>
   <span>Create new State</span>
-  <button mat-icon-button (click)="onStepRunClicked()">
+  <button class="button3" (click)="onStepRunClicked()">
     <mat-icon>play_arrow</mat-icon>
   </button>
   <span>Step Run</span>
-  <button mat-icon-button (click)="onPlayClicked()">
+  <button class="button3" (click)="onPlayClicked()">
     <mat-icon>play_circle_outline</mat-icon>
   </button>
   <span>Run</span>

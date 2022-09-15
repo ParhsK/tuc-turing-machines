@@ -7,12 +7,12 @@ import { TuringMachineService } from '../turing-machine.service';
   styleUrls: ['./main-page.component.css']
 })
 export class MainPageComponent implements OnInit {
+  public ls = localStorage;
 
-  constructor(private turingMachine: TuringMachineService) { }
+  constructor(public turingMachine: TuringMachineService) { }
 
   ngOnInit(): void {
     this.turingMachine.loadMachineState();
-    // this.turingMachine.intializeShiftRight();
   }
 
   onDownloadClicked(): void {

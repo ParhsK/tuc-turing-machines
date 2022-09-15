@@ -1,7 +1,15 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject, EMPTY, Subject } from 'rxjs';
-import { Delta, sleep, State, StateType, EMPTY_INPUT, Action } from './utils';
-
+import { emptyMachine } from './machine-examples/empty-machine';
+import {
+  Delta,
+  sleep,
+  State,
+  StateType,
+  EMPTY_INPUT,
+  Action,
+  MachineState,
+} from './utils';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +26,7 @@ export class TuringMachineService {
   public stateDialogOpen = new EventEmitter();
   public redrawEmitter = new EventEmitter();
 
+  public text: string | null = '';
   input = '';
   tape: Array<string> = [];
   head = 0;
@@ -26,9 +35,9 @@ export class TuringMachineService {
   alphabet = new Set<string>();
 
   constructor() {
-    this.alphabet.add(EMPTY_INPUT)
-    this.alphabet.add('a')
-    this.alphabet.add('b')
+    this.addToAlphabet(EMPTY_INPUT);
+    this.addToAlphabet('a');
+    this.addToAlphabet('b');
   }
 
   set states(val: Array<State>) {
@@ -60,48 +69,50 @@ export class TuringMachineService {
       deltas: this.deltas,
       tape: this.tape,
       head: this.head,
+      text: this.text,
     });
   }
 
-  saveMachineState(machineState: {states: State[], deltas: Delta[], tape: string[], head: number}) {
-    localStorage.setItem('machine', JSON.stringify(this.serializeMachineState()));
+  saveMachineState() {
+    localStorage.setItem(
+      'machine',
+      this.serializeMachineState()
+    );
   }
 
   // Read stored machine state from localStorage, deserialize and initialize machine
   loadMachineState(): void {
     const machineState = this.deserializeMachineState();
-    this.setAll(machineState.states, machineState.deltas, machineState.tape, machineState.head);
+    this.setAll(machineState);
   }
 
-  deserializeMachineState(): { states: State[], deltas: Delta[], tape: string[], head: number } {
+  deserializeMachineState(): MachineState {
     const serializedState = localStorage.getItem('machine');
     if (!serializedState) {
-      return {
-        states: [],
-        deltas: [],
-        tape: [],
-        head: 0,
-      };
+      return new MachineState([], [], []);
     }
-    return JSON.parse(serializedState);
+    const jsonMachineState = JSON.parse(serializedState);
+    return new MachineState(
+      jsonMachineState.states,
+      jsonMachineState.deltas,
+      jsonMachineState.tape,
+      jsonMachineState.head,
+      jsonMachineState.text
+    );
   }
 
   resetAll(): void {
-    const states: Array<State> = [];
-    const deltas: Array<Delta> = [];
-    const tape: Array<string> = [];
-    const head = 0;
-
-    this.setAll(states, deltas, tape, head);
+    this.setAll(emptyMachine);
   }
 
-  setAll(states: Array<State>, deltas: Array<Delta>, tape: Array<string>, head = 0) {
-    this.newTape(tape);
-    this.states = states;
-    this.deltas = deltas;
+  setAll(machineState: MachineState) {
+    this.newTape(machineState.tape);
+    this.states = machineState.states;
+    this.deltas = machineState.deltas;
     this.currentState = this.getInitialState();
-    this.head = head;
-    // this.redrawEmitter.emit();
+    this.head = machineState.head;
+    this.text = machineState.text;
+    this.saveMachineState();
   }
 
   getNextState(currentState: State, input: string): State {
@@ -135,7 +146,7 @@ export class TuringMachineService {
       throw Error('undefined current state');
     }
     if (this.currentState.type === StateType.FINAL_STATE) {
-      console.log('The machine has finished!')
+      console.log('The machine has finished!');
       return;
     }
     this.currentState = this.getNextState(this.currentState, this.input);
@@ -148,6 +159,7 @@ export class TuringMachineService {
 
   addToAlphabet(symbol: string): void {
     this.alphabet.add(symbol);
+    this.redrawEmitter.emit();
   }
 
   deleteFromAlphabet(symbol: string): void {
@@ -187,9 +199,9 @@ export class TuringMachineService {
           if (delta.input.includes(char)) {
             isOk = false;
           }
-        })
+        });
       }
-    })
+    });
     if (!isOk) {
       alert('This delta makes the machine non-deterministic or already exists');
       return;
@@ -237,13 +249,16 @@ export class TuringMachineService {
     const deltasToDelete: Array<Delta> = [];
     this.deltas.forEach((delta: Delta) => {
       if (stateId === delta.prevStateId || stateId === delta.newStateId) {
-        deltasToDelete.push(delta)
+        deltasToDelete.push(delta);
       }
-    })
+    });
     deltasToDelete.forEach((delta) => {
-      this.deleteDelta(delta.prevStateId, delta.input, delta.newStateId)
-    })
-    this.states.splice(this.states.findIndex((state: State) => stateId === state.id), 1);
+      this.deleteDelta(delta.prevStateId, delta.input, delta.newStateId);
+    });
+    this.states.splice(
+      this.states.findIndex((state: State) => stateId === state.id),
+      1
+    );
     this.updateStatesSubject();
     this.redrawEmitter.emit();
   }
@@ -296,7 +311,7 @@ export class TuringMachineService {
   }
 
   emptyTape() {
-    this.tape.splice(0, this.tape.length)
+    this.tape.splice(0, this.tape.length);
   }
 
   moveTape(): void {
@@ -321,14 +336,16 @@ export class TuringMachineService {
           }
           break;
         case Action.SEARCH_LEFT_EMPTY:
-          if ( this.head === 0 )  {
-            throw Error('unable to move further left, empty symbol was not found');
+          if (this.head === 0) {
+            throw Error(
+              'unable to move further left, empty symbol was not found'
+            );
           }
           for (let i = this.head; i >= 0; i--) {
             console.log(i);
             if (this.tape[i - 1] === EMPTY_INPUT) {
               this.head = i - 1;
-              console.log("mphka");
+              console.log('mphka');
               break;
             }
           }
@@ -355,6 +372,15 @@ export class TuringMachineService {
             }
           }
           throw Error('unable to move further left, symbol was not found');
+        case Action.MARK:
+          this.tape[this.head] = 'd';
+          break;
+        case Action.DECISION_YES:
+          alert('Yes');
+          break;
+        case Action.DECISION_NO:
+          alert('No');
+          break;
       }
     });
     if (this.head > this.tape.length - 1) {
@@ -420,92 +446,24 @@ export class TuringMachineService {
 
   moveHeadRight(): void {
     if (this.head >= this.tape.length - 1) {
-        this.tape.push(' ');
-        // this.head++;
-      }
+      this.tape.push(' ');
+      // this.head++;
+    }
     this.head++;
   }
 
-  intializeCopyMachine(): void {
-    const states = [
-      new State(0, StateType.INITIAL_STATE, [Action.SEARCH_LEFT_EMPTY], '393', '171'),
-      new State(1, StateType.MIDDLE_STATE, [Action.MOVE_RIGHT], '543', '171'),
-      new State(2, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY, Action.WRITE_X, Action.SEARCH_LEFT_EMPTY, Action.SEARCH_LEFT_EMPTY, Action.WRITE_X], '651', '171'),
-      new State(3, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY], '365', '302')
-    ];
-    const deltas = [
-      new Delta(0, ['a', 'b', EMPTY_INPUT], 1, 'right', 'left'),
-      new Delta(1, ['a', 'b'], 2, 'right', 'left'),
-      new Delta(2, ['a', 'b', EMPTY_INPUT], 1, 'right', 'top'),
-      new Delta(1, [EMPTY_INPUT], 3, 'bottom', 'top')
-    ];
-    const tape = [EMPTY_INPUT, 'a', 'b', 'a', EMPTY_INPUT, EMPTY_INPUT, EMPTY_INPUT];
-    const head = 4;
-    this.setAll(states, deltas, tape, head);
-  }
-
-  intializeShiftRightMachine(): void {
-    const states = [
-      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT], '693', '123'),
-      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT], '866', '123'),
-      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY], '532', '257'),
-    ];
-    const deltas = [
-      new Delta(0, ['a', 'b'], 1),
-      new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
-      new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
-    ];
-    const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
-    const head = 6;
-    this.setAll(states, deltas, tape, head);
-  }
-
-  intializeDecisionMachine(): void {
-    const states = [
-      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT], '693', '123'),
-      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT], '866', '123'),
-      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY], '532', '257'),
-    ];
-    const deltas = [
-      new Delta(0, ['a', 'b'], 1),
-      new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
-      new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
-    ];
-    const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
-    const head = 6;
-    this.setAll(states, deltas, tape, head);
-  }
-
-intializeRecursiveMachine(): void {
-    const states = [
-      new State(0, StateType.INITIAL_STATE, [Action.MOVE_LEFT], '693', '123'),
-      new State(1, StateType.MIDDLE_STATE, [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT], '866', '123'),
-      new State(2, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY], '532', '257'),
-    ];
-    const deltas = [
-      new Delta(0, ['a', 'b'], 1),
-      new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
-      new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
-    ];
-    const tape = [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT];
-    const head = 6;
-    this.setAll(states, deltas, tape, head);
-  }
-
-
-
   // Generate and download json with current state
   download() {
-    const file = new Blob([this.serializeMachineState()], {type: '.json'});
-    const a = document.createElement("a");
+    const file = new Blob([this.serializeMachineState()], { type: '.json' });
+    const a = document.createElement('a');
     const url = URL.createObjectURL(file);
     a.href = url;
     a.download = 'machine-state';
     document.body.appendChild(a);
     a.click();
-    setTimeout(function() {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
+    setTimeout(function () {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
     }, 0);
   }
 }

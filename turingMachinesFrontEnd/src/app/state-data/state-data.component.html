@@ -32,7 +32,7 @@
       </button>
       <mat-form-field>
         <mat-label>Start anchor</mat-label>
-        <mat-select [(ngModel)]="delta.startSocket">
+        <mat-select [(ngModel)]="delta.startSocket" (ngModelChange)="turingMachine.redrawEmitter.emit()">
           <mat-option value="top">Top</mat-option>
           <mat-option value="bottom">Bottom</mat-option>
           <mat-option value="left">Left</mat-option>
@@ -41,7 +41,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>End anchor</mat-label>
-        <mat-select [(ngModel)]="delta.endSocket">
+        <mat-select [(ngModel)]="delta.endSocket" (ngModelChange)="turingMachine.redrawEmitter.emit()">
           <mat-option value="top">Top</mat-option>
           <mat-option value="bottom">Bottom</mat-option>
           <mat-option value="left">Left</mat-option>
