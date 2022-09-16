@@ -6,7 +6,7 @@
   <mat-icon>add_circle_outline</mat-icon>
 </button>
 <ul>
-  <li *ngFor="let symbol of this.turingMachine.alphabet">{{ replaceEmptyCharacter(symbol) }}
+  <li *ngFor="let symbol of this.turingMachine._alphabet">{{ replaceEmptyCharacter(symbol) }}
     <button mat-button (click)="onDeleteClicked(symbol)" class="delete-button">
       <mat-icon>highlight_off</mat-icon>
     </button>

@@ -13,5 +13,5 @@ export const shiftRightMachine = new MachineState(
   ],
   [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT],
   6,
-  'shift right machine'
+  'This is the shift right machine example.'
 );

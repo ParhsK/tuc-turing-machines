@@ -23,6 +23,11 @@ export class TuringMachineService {
   private deltaChange$ = new BehaviorSubject<Array<Delta>>([]);
   public deltas$ = this.deltaChange$.asObservable();
 
+  public _alphabet: Set<string> = new Set<string>();
+  private alphabetChange$ = new BehaviorSubject<Set<string>>(this._alphabet);
+  public alphabet$ = this.deltaChange$.asObservable();
+
+
   public stateDialogOpen = new EventEmitter();
   public redrawEmitter = new EventEmitter();
 
@@ -32,7 +37,6 @@ export class TuringMachineService {
   head = 0;
   currentState?: State;
   paused = false;
-  alphabet = new Set<string>();
 
   constructor() {
     this.addToAlphabet(EMPTY_INPUT);
@@ -140,7 +144,7 @@ export class TuringMachineService {
   }
 
   stepRun(): void {
-    this.moveTape();
+    this.performActions();
     this.input = this.tape[this.head];
     if (this.currentState === undefined) {
       throw Error('undefined current state');
@@ -158,12 +162,17 @@ export class TuringMachineService {
   }
 
   addToAlphabet(symbol: string): void {
-    this.alphabet.add(symbol);
+    this._alphabet.add(symbol);
+    this.alphabetChange$.next(this._alphabet);
     this.redrawEmitter.emit();
   }
 
   deleteFromAlphabet(symbol: string): void {
-    this.alphabet.delete(symbol);
+    // TODO: check if used in deltas or states
+    this._alphabet.delete(symbol);
+
+    // TODO: Maybe add updateAlphabetSubject() method
+    this.alphabetChange$.next(this._alphabet);
   }
 
   addState(): void {
@@ -295,15 +304,9 @@ export class TuringMachineService {
   }
 
   addToTape(symbol: string) {
-    if (this.tape.length < 1) {
-      this.tape.push(' ');
-      this.tape.push(symbol);
-      this.tape.push(' ');
-    } else {
-      this.tape.pop();
-      this.tape.push(symbol);
-      this.tape.push(' ');
-    }
+    this.tape.pop();
+    this.tape.push(symbol);
+    this.tape.push(EMPTY_INPUT);
   }
 
   deleteFromTape() {
@@ -314,7 +317,7 @@ export class TuringMachineService {
     this.tape.splice(0, this.tape.length);
   }
 
-  moveTape(): void {
+  performActions(): void {
     console.log(this.currentState?.actions);
     this.currentState?.actions.forEach((action) => {
       switch (action) {
@@ -381,6 +384,11 @@ export class TuringMachineService {
         case Action.DECISION_NO:
           alert('No');
           break;
+        default:
+          if (!this._alphabet.has(action)) {
+            break;
+          }
+          this.tape[this.head] = action;
       }
     });
     if (this.head > this.tape.length - 1) {
@@ -418,7 +426,7 @@ export class TuringMachineService {
       this.stepRun();
       await sleep(300);
     }
-    this.moveTape();
+    this.performActions();
     return;
   }
 

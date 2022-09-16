@@ -15,5 +15,5 @@ export const copyMachine = new MachineState(
   ],
   [EMPTY_INPUT, 'a', 'b', 'a', EMPTY_INPUT, EMPTY_INPUT, EMPTY_INPUT],
   4,
-  'this is copy machine'
+  'This is the copy machine example.'
 )

@@ -27,13 +27,6 @@ export class TapeDataComponent implements OnInit {
     this.turingMachine.addToAlphabet(symbol);
   }
 
-  onAddToTapeClicked(symbol: string): void {
-    if (this.tape === undefined){
-      throw Error('undefined tape');
-    }
-    this.turingMachine.addToTape(symbol);
-  }
-
   onDeleteClicked(symbol: string): void {
     if (symbol === undefined){
       throw Error('undefined alphabet');
@@ -43,6 +36,13 @@ export class TapeDataComponent implements OnInit {
       return;
     }
     this.turingMachine.deleteFromAlphabet(symbol);
+  }
+
+  onAddToTapeClicked(symbol: string): void {
+    if (this.tape === undefined){
+      throw Error('undefined tape');
+    }
+    this.turingMachine.addToTape(symbol);
   }
 
   onDeleteFromTapeClicked(): void {

@@ -26,7 +26,12 @@ export class MachineState {
     public tape: Array<string> = [],
     public head: number = 0,
     public text: string = '',
-  ) {}
+  ) {
+    // Deep copy input to avoid touching the original object references
+    this.states = deepCopy(this.states);
+    this.deltas = deepCopy(this.deltas);
+    this.tape = deepCopy(this.tape);
+  }
 }
 
 export enum StateType {
@@ -63,4 +68,8 @@ export function sleep(seconds: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, seconds);
   });
+}
+
+export function deepCopy<T>(arr: Array<T>): Array<T> {
+  return JSON.parse(JSON.stringify(arr));
 }

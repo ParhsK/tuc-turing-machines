@@ -10,14 +10,8 @@
     <h2>Actions: <span class="actions">{{stateActions}}</span></h2>
   </div>
   <div class="actions-button-container">
-    <button mat-button (click)="onActionClicked(state!.id, 'R')">R</button>
-    <button mat-button (click)="onActionClicked(state!.id, 'L')">L</button>
-    <button mat-button (click)="onActionClicked(state!.id, 'X')">X</button>
-    <button mat-button (click)="onActionClicked(state!.id, '\u2294')">{{'\u2294'}}</button>
-    <button mat-button (click)="onActionClicked(state!.id, 'R\u2294')">R{{'\u2294'}}</button>
-    <button mat-button (click)="onActionClicked(state!.id, 'L\u2294')">L{{'\u2294'}}</button>
-    <button mat-button (click)="onActionClicked(state!.id, 'Rx')">Rx</button>
-    <button mat-button (click)="onActionClicked(state!.id, 'Lx')">Lx</button>
+    <button *ngFor="let action of allActions" mat-button (click)="onActionClicked(state!.id, action)">{{action}}</button>
+    <button *ngFor="let action of alphabetActions" mat-button (click)="onActionClicked(state!.id, action)">{{action}}</button>
     <button mat-button (click)="onActionDeleteClicked(state!.id)">
       <mat-icon>backspace</mat-icon>
     </button>

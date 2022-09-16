@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TuringMachineService } from '../turing-machine.service';
-import { Delta, replaceEmptyCharacter, State, StateType } from '../utils';
+import { Action, Delta, replaceEmptyCharacter, State, StateType } from '../utils';
 
 @Component({
   selector: 'app-state-data',
@@ -21,6 +21,9 @@ export class StateDataComponent implements OnInit {
   ];
   stateActions: string = ''
 
+  allActions: Array<string> = Object.values(Action);
+  alphabetActions: Array<string> = [];
+
   public replaceEmptyCharacter = (arr: Array<string>) => arr.map(c => replaceEmptyCharacter(c))
 
   constructor(
@@ -36,6 +39,13 @@ export class StateDataComponent implements OnInit {
     });
     this.turingMachine.deltas$.subscribe((deltas) => {
       this.deltas = this.turingMachine.getDeltasById(this.data);
+    });
+    this.turingMachine.alphabet$.subscribe((alphabet) => {
+      this.alphabetActions = Array.from(this.turingMachine._alphabet).filter((c) => {
+          return !this.allActions.includes(replaceEmptyCharacter(c));
+      }).map((c) => {
+        return replaceEmptyCharacter(c);
+      })
     });
   }
 

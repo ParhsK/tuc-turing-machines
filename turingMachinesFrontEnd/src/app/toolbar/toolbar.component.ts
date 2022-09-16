@@ -3,7 +3,9 @@ import { copyMachine } from '../machine-examples/copy-machine';
 import { decisionMachine } from '../machine-examples/decision-machine';
 import { recursiveMachine } from '../machine-examples/recursive-machine';
 import { shiftRightMachine } from '../machine-examples/shift-right-machine';
+import { myTuringMachine } from '../machine-examples/myTuringMachine';
 import { TuringMachineService } from '../turing-machine.service';
+import { MachineState } from '../utils';
 
 @Component({
   selector: 'app-toolbar',
@@ -30,19 +32,54 @@ export class ToolbarComponent implements OnInit {
     this.turingMachine.stepRun();
   }
 
+  onMyTuringMachineClicked(): void {
+    this.turingMachine.setAll(new MachineState(
+      myTuringMachine.states,
+      myTuringMachine.deltas,
+      myTuringMachine.tape,
+      myTuringMachine.head,
+      myTuringMachine.text,
+    ));
+  }
+
   onCopyingMachineClicked(): void {
-    this.turingMachine.setAll(copyMachine);
+    this.turingMachine.setAll(new MachineState(
+      copyMachine.states,
+      copyMachine.deltas,
+      copyMachine.tape,
+      copyMachine.head,
+      copyMachine.text,
+    ));
   }
 
   onShiftMachineClicked(): void {
-    this.turingMachine.setAll(shiftRightMachine);
+    console.log(shiftRightMachine)
+    this.turingMachine.setAll(new MachineState(
+      shiftRightMachine.states,
+      shiftRightMachine.deltas,
+      shiftRightMachine.tape,
+      shiftRightMachine.head,
+      shiftRightMachine.text,
+    ));
   }
 
   onDecisionMachineClicked(): void {
-    this.turingMachine.setAll(decisionMachine);
+    this.turingMachine.setAll(new MachineState(
+      decisionMachine.states,
+      decisionMachine.deltas,
+      decisionMachine.tape,
+      decisionMachine.head,
+      decisionMachine.text,
+    ));
   }
 
   onRecursiveMachineClicked(): void {
-    this.turingMachine.setAll(recursiveMachine);
+    this.turingMachine.setAll(new MachineState(
+      recursiveMachine.states,
+      recursiveMachine.deltas,
+      recursiveMachine.tape,
+      recursiveMachine.head,
+      recursiveMachine.text,
+    ));
   }
 }

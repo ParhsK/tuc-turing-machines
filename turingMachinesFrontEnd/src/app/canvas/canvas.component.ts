@@ -34,6 +34,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     });
     this.turingMachine.redrawEmitter.subscribe(() => {
       this.redrawAllLines();
+      this.onDragMove();
     });
   }
 
@@ -94,7 +95,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   generateCaptionLabel(delta: Delta): string {
     let missingCharacters = 0;
     let lastMissingCharacter = undefined;
-    this.turingMachine.alphabet.forEach((character) => {
+    this.turingMachine._alphabet.forEach((character) => {
       if (!delta.input.includes(character)) {
         missingCharacters++;
         lastMissingCharacter = character;
