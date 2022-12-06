@@ -19,9 +19,15 @@ export class ToolbarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onAddClicked(): void {
-    this.turingMachine.addState();
+  onMenuClicked(): void {
 
+  }
+  onAddNodeClicked(): void {
+    this.turingMachine.addState();
+  }
+
+  onAddDeltaClicked(): void {
+    this.turingMachine.addDelta2();
   }
 
   onPlayClicked(): void {
@@ -30,6 +36,10 @@ export class ToolbarComponent implements OnInit {
 
   onStepRunClicked(): void {
     this.turingMachine.stepRun();
+  }
+
+  onPauseClicked(): void {
+
   }
 
   onMyTuringMachineClicked(): void {

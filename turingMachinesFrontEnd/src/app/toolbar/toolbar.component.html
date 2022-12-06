@@ -1,30 +1,32 @@
 <mat-toolbar>
-  <button class="button2" (click)="onMyTuringMachineClicked()">
-   <h3>MyTuringMachine</h3>
+  <button class="button" mat-button [matMenuTriggerFor]="menu">Machines</button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item class="button" (click)="onMyTuringMachineClicked()">MyTuringMachine
+    </button>
+    <button mat-menu-item class="button" (click)="onCopyingMachineClicked()">CopyingMachine
+    </button>
+    <button mat-menu-item class="button" (click)="onShiftMachineClicked()">RightShiftingMachine
+    </button>
+    <button mat-menu-item class="button" (click)="onDecisionMachineClicked()">DecidingMachine
+    </button>
+    <button mat-menu-item class="button" (click)="onRecursiveMachineClicked()">RecursiveMachine
+    </button>
+  </mat-menu>
+  <span class="spacer"></span>
+  <button class="button" mat-button (click)="onStepRunClicked()">
+    <mat-icon>play_arrow</mat-icon> Step
+  </button>
+  <button class="button" mat-button (click)="onPlayClicked()">
+    <mat-icon>play_circle_outline</mat-icon> Run
+  </button>
+  <button class="button" mat-button (click)="onPauseClicked()">
+    <mat-icon>pause_circle_outline</mat-icon> Pause
   </button>
   <span class="spacer"></span>
-  <button class="button" (click)="onCopyingMachineClicked()">
-    <h2>CopyingMachine</h2>
+  <button class="button" mat-button (click)="onAddNodeClicked()">
+    <mat-icon>add_circle_outline</mat-icon> Create new Node
   </button>
-  <button class="button" (click)="onShiftMachineClicked()">
-    <h2>RightShiftingMachine</h2>
+  <button class="button" mat-button (click)="onAddDeltaClicked()">
+    <mat-icon>add_circle_outline</mat-icon> Create new Node
   </button>
-  <button class="button" (click)="onDecisionMachineClicked()">
-    <h2>DecidingMachine</h2>
-  </button>
-  <button class="button" (click)="onRecursiveMachineClicked()">
-    <h2>RecursiveMachine</h2>
-  </button>
-  <span class="spacer"></span>
-  <button class="button3" (click)="onAddClicked()">
-    <mat-icon>add_circle_outline</mat-icon></button>
-  <span>Create new State</span>
-  <button class="button3" (click)="onStepRunClicked()">
-    <mat-icon>play_arrow</mat-icon>
-  </button>
-  <span>Step Run</span>
-  <button class="button3" (click)="onPlayClicked()">
-    <mat-icon>play_circle_outline</mat-icon>
-  </button>
-  <span>Run</span>
 </mat-toolbar>

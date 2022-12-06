@@ -7,6 +7,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule  } from '@angular/material/form-field';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
@@ -37,6 +38,7 @@ import { StateCardComponent } from './state-card/state-card.component';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatMenuModule,
     BrowserAnimationsModule,
     MatGridListModule,
     FormsModule,

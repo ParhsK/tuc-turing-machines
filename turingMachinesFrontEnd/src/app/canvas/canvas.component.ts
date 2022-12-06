@@ -110,7 +110,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
     // Different from caption if only one character is not included
     else if (missingCharacters === 1 && lastMissingCharacter) {
-      text = 'NOT' + replaceEmptyCharacter(lastMissingCharacter);
+      text = '\u2260' + replaceEmptyCharacter(lastMissingCharacter);
     }
 
     const options = {

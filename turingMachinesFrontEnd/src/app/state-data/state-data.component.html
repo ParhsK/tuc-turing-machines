@@ -1,7 +1,7 @@
 <div class="button-container">
   <h1 style="text-align:center">id:{{state?.id}}</h1>
   <mat-radio-group *ngIf="state" [(ngModel)]="state.type">
-    <h2>State Type</h2>
+    <h2>Node Type</h2>
     <mat-radio-button class="state-radio-button" *ngFor="let stateType of stateTypes" [value]="stateType">{{stateType}}
     </mat-radio-button>
   </mat-radio-group>
@@ -48,7 +48,7 @@
     <input matInput [(ngModel)]="input" placeholder="Input">
   </mat-form-field>
   <mat-form-field>
-    <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next state">
+    <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next Node">
   </mat-form-field>
   <h2>Add transition function(δ)<button mat-button (click)="onDeltaAddClicked()" class="button-container">
       <mat-icon>add</mat-icon>

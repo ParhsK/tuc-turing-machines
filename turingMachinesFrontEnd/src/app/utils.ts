@@ -36,7 +36,7 @@ export class MachineState {
 
 export enum StateType {
   INITIAL_STATE = 'Initial',
-  MIDDLE_STATE = 'Middle',
+  MIDDLE_STATE = 'Intermediate',
   FINAL_STATE = 'Final',
 }
 

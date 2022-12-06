@@ -143,20 +143,6 @@ export class TuringMachineService {
     return nextState;
   }
 
-  stepRun(): void {
-    this.performActions();
-    this.input = this.tape[this.head];
-    if (this.currentState === undefined) {
-      throw Error('undefined current state');
-    }
-    if (this.currentState.type === StateType.FINAL_STATE) {
-      console.log('The machine has finished!');
-      return;
-    }
-    this.currentState = this.getNextState(this.currentState, this.input);
-    return;
-  }
-
   getMaxStateId(): number {
     return this.states[this.states.length - 1].id + 1;
   }
@@ -173,6 +159,10 @@ export class TuringMachineService {
 
     // TODO: Maybe add updateAlphabetSubject() method
     this.alphabetChange$.next(this._alphabet);
+  }
+
+  addDelta2(): void {
+
   }
 
   addState(): void {
@@ -427,6 +417,20 @@ export class TuringMachineService {
       await sleep(300);
     }
     this.performActions();
+    return;
+  }
+
+  stepRun(): void {
+    this.performActions();
+    this.input = this.tape[this.head];
+    if (this.currentState === undefined) {
+      throw Error('undefined current state');
+    }
+    if (this.currentState.type === StateType.FINAL_STATE) {
+      console.log('The machine has finished!');
+      return;
+    }
+    this.currentState = this.getNextState(this.currentState, this.input);
     return;
   }
 
