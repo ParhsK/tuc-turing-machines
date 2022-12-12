@@ -28,7 +28,7 @@
 
   <button class="button" mat-button [matMenuTriggerFor]="slider">Animation Speed</button>
   <mat-menu #slider="matMenu">
-    <mat-slider discrete min="1" max="5" value="2" (valueChange)="updateSpeed($event)">
+    <mat-slider color="primary" discrete min="1" max="5" value="2" (valueChange)="updateSpeed($event)">
     </mat-slider>
   </mat-menu>
   <span class="spacer"></span>

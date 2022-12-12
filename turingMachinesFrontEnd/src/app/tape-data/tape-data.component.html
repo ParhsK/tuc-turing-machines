@@ -5,10 +5,10 @@
     (keydown.enter)="onSaveTapeClicked()"
     placeholder="Insert tape">
 </mat-form-field>
-<button mat-button (click)="onSaveTapeClicked()" class="add-button">
+<button mat-button class="button" (click)="onSaveTapeClicked()">
   <mat-icon>add_circle_outline</mat-icon>
 </button>
-<button mat-button (click)="onEmptyTapeClicked()" class="delete-button">
+<button mat-button class="button" (click)="onEmptyTapeClicked()">
   <mat-icon>delete</mat-icon>
 </button>
 <h2>Alphabet Σ</h2>
@@ -19,23 +19,22 @@
     (keydown.enter)="onAddClicked(inputSymbol)"
     placeholder="Insert symbol">
 </mat-form-field>
-<button mat-button (click)="onAddClicked(inputSymbol)" class="add-button">
+<button mat-button class="button" (click)="onAddClicked(inputSymbol)">
   <mat-icon>add_circle_outline</mat-icon>
 </button>
 <ul>
   <li *ngFor="let symbol of this.turingMachine._alphabet">{{ replaceEmptyCharacter(symbol) }}
-    <button mat-button (click)="onDeleteClicked(symbol)" class="delete-button">
+    <button mat-button class="button" (click)="onDeleteClicked(symbol)">
       <mat-icon>highlight_off</mat-icon>
     </button>
   </li>
 </ul>
-<h3>Head position
-  <button mat-button (click)="onHeadToStartClicked()">Start
+<h3 style="color:rgb(30, 0, 128);">Head position </h3>
+  <button mat-button class="button" (click)="onHeadToStartClicked()">Start
   </button>
-  <button mat-button (click)="onHeadToEndClicked()">End
+  <button mat-button class="button" (click)="onHeadToEndClicked()">End
   </button>
-  <button mat-button (click)="onHeadLeftClicked()">Left
+  <button mat-button class="button" (click)="onHeadLeftClicked()">Left
   </button>
-  <button mat-button (click)="onHeadRightClicked()">Right
+  <button mat-button class="button" (click)="onHeadRightClicked()">Right
   </button>
-</h3>

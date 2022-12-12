@@ -444,9 +444,8 @@ export class TuringMachineService {
     return false;
   }
 
-
   async machineRun(): Promise<void> {
-    this.loadMachineState();
+    // this.loadMachineState();
     this.currentState = this.getInitialState();
     while (this.isFinal() === false ) {
       if (this.paused) {
