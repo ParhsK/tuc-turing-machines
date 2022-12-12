@@ -12,6 +12,7 @@
 }
 
 .character {
+  min-width: 40px;
   width: 40px;
   border: 1px solid black;
   text-align: center;

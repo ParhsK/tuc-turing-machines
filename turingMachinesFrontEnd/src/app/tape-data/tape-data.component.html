@@ -1,6 +1,23 @@
-<h2>Alphabet Σ</h2>
+<h2>Tape</h2>
 <mat-form-field>
-  <input matInput [(ngModel)]="inputSymbol" placeholder="Insert symbol">
+  <input matInput
+    [(ngModel)]="tape"
+    (keydown.enter)="onSaveTapeClicked()"
+    placeholder="Insert tape">
+</mat-form-field>
+<button mat-button (click)="onSaveTapeClicked()" class="add-button">
+  <mat-icon>add_circle_outline</mat-icon>
+</button>
+<button mat-button (click)="onEmptyTapeClicked()" class="delete-button">
+  <mat-icon>delete</mat-icon>
+</button>
+<h2>Alphabet Σ</h2>
+<mat-form-field hintLabel="Max 1 character">
+  <input matInput
+    [(ngModel)]="inputSymbol"
+    maxlength="1"
+    (keydown.enter)="onAddClicked(inputSymbol)"
+    placeholder="Insert symbol">
 </mat-form-field>
 <button mat-button (click)="onAddClicked(inputSymbol)" class="add-button">
   <mat-icon>add_circle_outline</mat-icon>
@@ -10,17 +27,8 @@
     <button mat-button (click)="onDeleteClicked(symbol)" class="delete-button">
       <mat-icon>highlight_off</mat-icon>
     </button>
-    <button mat-button (click)="onAddToTapeClicked(symbol)" class="add-button">
-      <mat-icon>add_circle_outline</mat-icon>
-    </button>
   </li>
 </ul>
-<h3>Tape Pop<button mat-button (click)="onDeleteFromTapeClicked()" class="delete-button">
-    <mat-icon>backspace</mat-icon>
-  </button></h3>
-<h3>Empty Tape<button mat-button (click)="onEmptyTapeClicked()" class="delete-button">
-    <mat-icon>delete</mat-icon>
-  </button></h3>
 <h3>Head position
   <button mat-button (click)="onHeadToStartClicked()">Start
   </button>

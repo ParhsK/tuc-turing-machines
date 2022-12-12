@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TuringMachineService } from '../turing-machine.service';
 import { replaceEmptyCharacter } from '../utils';
 
@@ -7,17 +7,15 @@ import { replaceEmptyCharacter } from '../utils';
   templateUrl: './tape-data.component.html',
   styleUrls: ['./tape-data.component.css']
 })
-export class TapeDataComponent implements OnInit {
+export class TapeDataComponent {
 
   inputSymbol: string = '';
-  tape: Array<string> = [];
-
+  tape: string = '';
 
   public replaceEmptyCharacter = replaceEmptyCharacter;
 
-  constructor(public turingMachine: TuringMachineService) { }
-
-  ngOnInit(): void {
+  constructor(public turingMachine: TuringMachineService) {
+    this.tape = this.turingMachine.tape.join('');
   }
 
   onAddClicked(symbol: string): void {
@@ -25,6 +23,7 @@ export class TapeDataComponent implements OnInit {
       throw Error('undefined alphabet');
     }
     this.turingMachine.addToAlphabet(symbol);
+    this.inputSymbol = '';
   }
 
   onDeleteClicked(symbol: string): void {
@@ -38,11 +37,9 @@ export class TapeDataComponent implements OnInit {
     this.turingMachine.deleteFromAlphabet(symbol);
   }
 
-  onAddToTapeClicked(symbol: string): void {
-    if (this.tape === undefined){
-      throw Error('undefined tape');
-    }
-    this.turingMachine.addToTape(symbol);
+  onSaveTapeClicked(): void {
+    const newTape = this.tape.split('');
+    this.tape = this.turingMachine.newTape(newTape).join('');
   }
 
   onDeleteFromTapeClicked(): void {
@@ -51,6 +48,7 @@ export class TapeDataComponent implements OnInit {
 
   onEmptyTapeClicked(): void {
     this.turingMachine.emptyTape();
+    this.tape = this.turingMachine.tape.join('')
   }
 
   onHeadToStartClicked(): void {

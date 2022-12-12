@@ -16,7 +16,7 @@ import { NewDeltaDataComponent } from '../new-delta-data/new-delta-data.componen
 })
 export class ToolbarComponent implements OnInit {
   constructor(
-    private turingMachine: TuringMachineService,
+    public turingMachine: TuringMachineService,
     public dialog: MatDialog
   ) {}
 
@@ -48,6 +48,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   onPauseClicked(): void {
+    this.turingMachine.machinePauseResume();
   }
 
   onMyTuringMachineClicked(): void {

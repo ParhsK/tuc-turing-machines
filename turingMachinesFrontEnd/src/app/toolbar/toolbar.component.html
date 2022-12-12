@@ -17,11 +17,15 @@
     <mat-icon>play_arrow</mat-icon> Step
   </button>
   <button class="button" mat-button (click)="onPlayClicked()">
-    <mat-icon>play_circle_outline</mat-icon> Run
+    <mat-icon>play_circle_outline</mat-icon> Initialize
   </button>
-  <button class="button" mat-button (click)="onPauseClicked()">
+  <button *ngIf="turingMachine.paused" class="button" mat-button (click)="onPauseClicked()">
+      <mat-icon>play_circle_outline</mat-icon> Resume
+  </button>
+  <button *ngIf="!turingMachine.paused" class="button" mat-button (click)="onPauseClicked()">
     <mat-icon>pause_circle_outline</mat-icon> Pause
   </button>
+
   <button class="button" mat-button [matMenuTriggerFor]="slider">Animation Speed</button>
   <mat-menu #slider="matMenu">
     <mat-slider discrete min="1" max="5" value="2" (valueChange)="updateSpeed($event)">
