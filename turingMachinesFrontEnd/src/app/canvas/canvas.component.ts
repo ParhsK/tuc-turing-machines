@@ -45,7 +45,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       setTimeout(() => {
         this.redrawAllLines();
       }, 10);
-    })
+    });
   }
 
   removeAllLines(): void {
@@ -57,7 +57,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
   redrawAllLines(): void {
     this.removeAllLines();
-    this.turingMachine.deltas.forEach((delta) => {
+    this.turingMachine.deltas.forEach((delta, deltaIndex) => {
       const startingElement = this.stateCards?.find((item) => {
         return item.state?.id === delta.prevStateId;
       })?.element.nativeElement;
@@ -65,29 +65,52 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         return item.state?.id === delta.newStateId;
       })?.element.nativeElement;
 
+      const isCurrentDelta =
+        this.turingMachine.currentDeltaIndex === deltaIndex;
+
       if (delta.prevStateId === delta.newStateId) {
         // Hack for same element
         // https://github.com/anseki/leader-line/issues/181
         endingElement = endingElement.children[0];
 
-        const selfLine = new LeaderLine(startingElement, endingElement, {
+        const leaderLineConfig = {
           color: 'black',
           path: 'fluid',
           startSocket: 'top',
           endSocket: 'right',
           middleLabel: this.generateCaptionLabel(delta),
-        });
+        };
+
+        if (isCurrentDelta) {
+          leaderLineConfig.color = 'red';
+        }
+
+        const selfLine = new LeaderLine(
+          startingElement,
+          endingElement,
+          leaderLineConfig
+        );
         this.deltaLines.push(selfLine);
         return;
       }
 
-      const line = new LeaderLine(startingElement, endingElement, {
+      const leaderLineConfig = {
         color: 'black',
         path: 'grid',
         startSocket: delta.startSocket,
         endSocket: delta.endSocket,
         startLabel: this.generateCaptionLabel(delta),
-      });
+      };
+
+      if (isCurrentDelta) {
+        leaderLineConfig.color = 'red';
+      }
+
+      const line = new LeaderLine(
+        startingElement,
+        endingElement,
+        leaderLineConfig
+      );
       this.deltaLines.push(line);
     });
   }
@@ -116,7 +139,7 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const options = {
       color: 'black',
       // offset: [1000, 1000],
-      lineOffset: 50
+      lineOffset: 50,
     };
     return LeaderLine.captionLabel(text, options);
   }
@@ -132,9 +155,12 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     const stateElement = this.stateCards?.find((item) => {
       return item.state?.id === stateId;
     })?.element.nativeElement;
-    console.log(`Moved state ${stateId}`);
-    const matrixRegex = /matrix\(([0-9]*), ([0-9]*), ([0-9]*), ([0-9]*), ([0-9]*), ([0-9]*)\)/;
-    const matrixString = window.getComputedStyle(stateElement, null).getPropertyValue('transform');
+    console.log(`Moved node ${stateId}`);
+    const matrixRegex =
+      /matrix\(([0-9]*), ([0-9]*), ([0-9]*), ([0-9]*), ([0-9]*), ([0-9]*)\)/;
+    const matrixString = window
+      .getComputedStyle(stateElement, null)
+      .getPropertyValue('transform');
     const translateX = matrixString.match(matrixRegex)?.[5];
     const translateY = matrixString.match(matrixRegex)?.[6];
     console.log(translateX, translateY);

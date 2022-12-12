@@ -1,0 +1,18 @@
+<h2>New transition function(δ)
+  <p></p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="startingNodeId" type="number" placeholder="Starting Node">
+  </mat-form-field>
+  <p></p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="input" placeholder="Input">
+  </mat-form-field>
+  <p></p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="endingNodeId" type="number" placeholder="Ending Node">
+  </mat-form-field>
+  <p></p>
+  <button mat-mini-fab (click)="onDeltaAddClicked()" color="primary">
+    <mat-icon>add</mat-icon>
+  </button>
+</h2>

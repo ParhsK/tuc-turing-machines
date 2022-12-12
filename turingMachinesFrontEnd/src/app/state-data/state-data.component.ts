@@ -50,8 +50,8 @@ export class StateDataComponent implements OnInit {
   }
 
   onDeltaAddClicked(): void {
-    if (this.nextStateId === undefined){
-      throw Error('undefined next state id');
+    if (this.nextStateId === undefined) {
+      throw Error('undefined next node id');
     }
     console.log(this.state!.id, this.input.split(''), this.nextStateId)
     this.turingMachine.addDelta(this.state!.id, this.input.split(''), this.nextStateId);

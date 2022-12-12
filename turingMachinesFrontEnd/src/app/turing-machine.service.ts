@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, EMPTY, Subject } from 'rxjs';
 import { emptyMachine } from './machine-examples/empty-machine';
 import {
@@ -36,9 +37,12 @@ export class TuringMachineService {
   tape: Array<string> = [];
   head = 0;
   currentState?: State;
+  currentDeltaIndex?: number;
   paused = false;
+  speed = 2;
 
-  constructor() {
+
+  constructor( private _snackBar: MatSnackBar ) {
     this.addToAlphabet(EMPTY_INPUT);
     this.addToAlphabet('a');
     this.addToAlphabet('b');
@@ -119,10 +123,9 @@ export class TuringMachineService {
     this.saveMachineState();
   }
 
-  getNextState(currentState: State, input: string): State {
-    console.log('Current state id is', currentState.id);
+  getCurrentDelta(currentState: State, input: string): Delta {
     const formattedInput = input || EMPTY_INPUT;
-    const currentDelta = this.deltas.find((delta) => {
+    const currentDeltaIndex = this.deltas.findIndex((delta) => {
       if (
         delta.prevStateId === currentState.id &&
         delta.input.includes(formattedInput)
@@ -131,11 +134,16 @@ export class TuringMachineService {
       }
       return false;
     });
+    const currentDelta = this.deltas[currentDeltaIndex]
     if (currentDelta === undefined) {
       throw Error('undefined delta result');
     }
+    this.currentDeltaIndex = currentDeltaIndex;
+    return currentDelta;
+  }
+
+  getNextState(currentDelta: Delta): State {
     const nextStateId = currentDelta.newStateId;
-    console.log('Next state id is', nextStateId);
     const nextState = this.getStateById(nextStateId);
     if (nextState === undefined) {
       throw Error('undefined next state');
@@ -159,10 +167,6 @@ export class TuringMachineService {
 
     // TODO: Maybe add updateAlphabetSubject() method
     this.alphabetChange$.next(this._alphabet);
-  }
-
-  addDelta2(): void {
-
   }
 
   addState(): void {
@@ -202,7 +206,8 @@ export class TuringMachineService {
       }
     });
     if (!isOk) {
-      alert('This delta makes the machine non-deterministic or already exists');
+      // alert('This delta makes the machine non-deterministic or already exists');
+      this._snackBar.open('This transition function makes the machine non-deterministic or already exists', 'close');
       return;
     }
     newDeltas.push(newDelta);
@@ -335,10 +340,8 @@ export class TuringMachineService {
             );
           }
           for (let i = this.head; i >= 0; i--) {
-            console.log(i);
             if (this.tape[i - 1] === EMPTY_INPUT) {
               this.head = i - 1;
-              console.log('mphka');
               break;
             }
           }
@@ -369,10 +372,12 @@ export class TuringMachineService {
           this.tape[this.head] = 'd';
           break;
         case Action.DECISION_YES:
-          alert('Yes');
+          // alert('Yes');
+          this._snackBar.open('Yes', 'Close', {horizontalPosition: 'right', duration: 0});
           break;
         case Action.DECISION_NO:
-          alert('No');
+          // alert('No');
+          this._snackBar.open('No', 'Close', {horizontalPosition: 'right', duration: 0});
           break;
         default:
           if (!this._alphabet.has(action)) {
@@ -413,14 +418,17 @@ export class TuringMachineService {
   async machineRun(): Promise<void> {
     this.currentState = this.getInitialState();
     while (this.isFinal() === false && this.paused === false) {
-      this.stepRun();
-      await sleep(300);
+      await this.stepRun();
     }
     this.performActions();
     return;
   }
 
-  stepRun(): void {
+  setSpeed(newSpeed: number): void {
+    this.speed = newSpeed;
+  }
+
+  async stepRun(): Promise<void> {
     this.performActions();
     this.input = this.tape[this.head];
     if (this.currentState === undefined) {
@@ -430,7 +438,14 @@ export class TuringMachineService {
       console.log('The machine has finished!');
       return;
     }
-    this.currentState = this.getNextState(this.currentState, this.input);
+    console.log('Current state id is', this.currentState.id);
+    const currentDelta = this.getCurrentDelta(this.currentState, this.input)
+    this.redrawEmitter.emit();
+    await sleep(500 - this.speed * 100);
+    this.currentState = this.getNextState(currentDelta);
+    this.currentDeltaIndex = undefined;
+    await sleep(500 - this.speed * 100);
+    console.log('Next state id is', this.currentState);
     return;
   }
 

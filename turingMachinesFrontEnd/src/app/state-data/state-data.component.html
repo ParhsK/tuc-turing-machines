@@ -44,15 +44,18 @@
       </mat-form-field>
     </li>
   </div>
-  <mat-form-field>
-    <input matInput [(ngModel)]="input" placeholder="Input">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next Node">
-  </mat-form-field>
-  <h2>Add transition function(δ)<button mat-button (click)="onDeltaAddClicked()" class="button-container">
-      <mat-icon>add</mat-icon>
-    </button>
+  <h2>Add transition function(δ)
+    <p></p>
+    <mat-form-field>
+      <input matInput [(ngModel)]="input" placeholder="Input">
+    </mat-form-field>
+    <p></p>
+    <mat-form-field>
+      <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next Node">
+    </mat-form-field>
+    <p></p>
+    <mat-icon>add</mat-icon>
+    <button mat-button (click)="onDeltaAddClicked()" class="button-container"></button>
   </h2>
 </div>
 <button mat-button (click)="onStateDeleteClicked(state?.id!)" class="add-button-container">

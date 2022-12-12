@@ -4,6 +4,10 @@
 
 .button:hover {
   transition-duration: 0.6s;
-  background-color: #0d79df; /* Green */
+  background-color: #414d58; /* Green */
   color: white;
+}
+
+mat-slider {
+  margin: 0 8px;
 }

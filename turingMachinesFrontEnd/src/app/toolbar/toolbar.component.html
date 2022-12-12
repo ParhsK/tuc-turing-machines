@@ -1,4 +1,4 @@
-<mat-toolbar>
+<mat-toolbar color="primary">
   <button class="button" mat-button [matMenuTriggerFor]="menu">Machines</button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item class="button" (click)="onMyTuringMachineClicked()">MyTuringMachine
@@ -22,11 +22,16 @@
   <button class="button" mat-button (click)="onPauseClicked()">
     <mat-icon>pause_circle_outline</mat-icon> Pause
   </button>
+  <button class="button" mat-button [matMenuTriggerFor]="slider">Animation Speed</button>
+  <mat-menu #slider="matMenu">
+    <mat-slider discrete min="1" max="5" value="2" (valueChange)="updateSpeed($event)">
+    </mat-slider>
+  </mat-menu>
   <span class="spacer"></span>
   <button class="button" mat-button (click)="onAddNodeClicked()">
     <mat-icon>add_circle_outline</mat-icon> Create new Node
   </button>
-  <button class="button" mat-button (click)="onAddDeltaClicked()">
-    <mat-icon>add_circle_outline</mat-icon> Create new Node
+  <button class="button" mat-button (click)="openDialog()">
+    <mat-icon>add_circle_outline</mat-icon> Create new Delta
   </button>
 </mat-toolbar>

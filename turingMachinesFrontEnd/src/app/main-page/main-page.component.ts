@@ -18,5 +18,4 @@ export class MainPageComponent implements OnInit {
   onDownloadClicked(): void {
     this.turingMachine.download();
   }
-
 }
