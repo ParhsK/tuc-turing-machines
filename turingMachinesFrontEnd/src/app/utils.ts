@@ -55,8 +55,8 @@ export enum Action {
   SEARCH_LEFT_X = 'Lx',
   WRITE_X = 'X',
   MARK = 'd',
-  DECISION_YES = 'yes',
-  DECISION_NO = 'no'
+  DECISION_YES = 'y',
+  DECISION_NO = 'n'
 }
 
 export const EMPTY_INPUT = ' ';

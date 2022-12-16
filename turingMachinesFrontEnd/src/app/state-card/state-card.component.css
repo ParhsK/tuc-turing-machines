@@ -50,3 +50,9 @@
   align-items: center;
   justify-content: center;
 }
+
+.alphabet-action {
+  font-style: italic;
+  font-weight: 400;
+  width: 1.3ch;
+}
