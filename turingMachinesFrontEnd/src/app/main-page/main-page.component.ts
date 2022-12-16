@@ -12,6 +12,7 @@ export class MainPageComponent implements OnInit {
   constructor(public turingMachine: TuringMachineService) { }
 
   ngOnInit(): void {
+    console.log("Loading machine from memory");
     this.turingMachine.loadMachineState();
   }
 

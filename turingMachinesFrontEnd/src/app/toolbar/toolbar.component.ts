@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { copyMachine } from '../machine-examples/copy-machine';
 import { decisionMachine } from '../machine-examples/decision-machine';
-import { recursiveMachine } from '../machine-examples/recursive-machine';
 import { shiftRightMachine } from '../machine-examples/shift-right-machine';
 import { myTuringMachine } from '../machine-examples/myTuringMachine';
 import { TuringMachineService } from '../turing-machine.service';
@@ -22,14 +21,12 @@ export class ToolbarComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  openDialog() {
+  openNewDeltaDialog() {
     const dialogRef = this.dialog.open(NewDeltaDataComponent);
     dialogRef.afterClosed().subscribe((result) => {
       console.log(`Dialog result: ${result}`);
     });
   }
-
-  onMenuClicked(): void {}
 
   updateSpeed(event: any): void {
     this.turingMachine.setSpeed(event);
@@ -58,6 +55,7 @@ export class ToolbarComponent implements OnInit {
         myTuringMachine.deltas,
         myTuringMachine.tape,
         myTuringMachine.head,
+        myTuringMachine.alphabet,
         myTuringMachine.text
       )
     );
@@ -70,6 +68,7 @@ export class ToolbarComponent implements OnInit {
         copyMachine.deltas,
         copyMachine.tape,
         copyMachine.head,
+        copyMachine.alphabet,
         copyMachine.text
       )
     );
@@ -83,6 +82,7 @@ export class ToolbarComponent implements OnInit {
         shiftRightMachine.deltas,
         shiftRightMachine.tape,
         shiftRightMachine.head,
+        shiftRightMachine.alphabet,
         shiftRightMachine.text
       )
     );
@@ -95,19 +95,8 @@ export class ToolbarComponent implements OnInit {
         decisionMachine.deltas,
         decisionMachine.tape,
         decisionMachine.head,
+        decisionMachine.alphabet,
         decisionMachine.text
-      )
-    );
-  }
-
-  onRecursiveMachineClicked(): void {
-    this.turingMachine.setAll(
-      new MachineState(
-        recursiveMachine.states,
-        recursiveMachine.deltas,
-        recursiveMachine.tape,
-        recursiveMachine.head,
-        recursiveMachine.text
       )
     );
   }

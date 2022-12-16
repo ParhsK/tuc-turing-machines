@@ -7,16 +7,18 @@
 <br>
 <br>
 <div class="actions-container">
-  <h2>Actions: <span class="actions">{{stateActions}}</span></h2>
+  <h2>Actions: <span class="actions">{{stateActions}}</span>
+  <button mat-button (click)="onActionDeleteClicked(state!.id)">
+    <mat-icon>backspace</mat-icon>
+  </button></h2>
 </div>
 <div class="actions-button-container">
   <button class="button" *ngFor="let action of allActions" mat-button
     (click)="onActionClicked(state!.id, action)">{{action}}</button>
+</div>
+<div>
   <button class="button" *ngFor="let action of alphabetActions" mat-button
     (click)="onActionClicked(state!.id, action)">{{action}}</button>
-  <button mat-button (click)="onActionDeleteClicked(state!.id)">
-    <mat-icon>backspace</mat-icon>
-  </button>
 </div>
 <div class="deltas-container">
   <h2>Transition Functions</h2>
@@ -49,13 +51,11 @@
 <h2>Add transition function(δ)
   <p></p>
   <mat-form-field>
+    <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next Node">
+  </mat-form-field> /
+  <mat-form-field>
     <input matInput [(ngModel)]="input" placeholder="Input">
   </mat-form-field>
-  <p></p>
-  <mat-form-field>
-    <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next Node">
-  </mat-form-field>
-  <p></p>
   <button mat-button class="button" (click)="onDeltaAddClicked()">
     <mat-icon>add</mat-icon>
   </button>

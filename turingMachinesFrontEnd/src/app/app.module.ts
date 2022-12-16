@@ -13,6 +13,7 @@ import { MatFormFieldModule  } from '@angular/material/form-field';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDividerModule } from '@angular/material/divider';
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { MainPageComponent } from './main-page/main-page.component';
@@ -40,6 +41,7 @@ import { NewDeltaDataComponent } from './new-delta-data/new-delta-data.component
   ],
   imports: [
     BrowserModule,
+    MatDividerModule,
     MatSnackBarModule,
     MatSliderModule,
     MatToolbarModule,

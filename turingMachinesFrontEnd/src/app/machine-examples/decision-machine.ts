@@ -34,5 +34,6 @@ export const decisionMachine = {
   ],
   tape: [EMPTY_INPUT, 'a', 'a', 'b','b', 'c','c', EMPTY_INPUT],
   head: 0,
+  alphabet: [EMPTY_INPUT, 'a', 'b', 'c'],
   text: 'This is the decision machine example.'
 };

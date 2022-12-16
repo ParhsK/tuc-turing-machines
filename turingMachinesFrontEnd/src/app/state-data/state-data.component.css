@@ -38,3 +38,10 @@ mat-radio-button {
 .title {
   text-align: center;
 }
+
+/* Removes arrow for increment in input of type number */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

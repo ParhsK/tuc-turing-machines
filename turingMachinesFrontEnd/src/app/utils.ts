@@ -25,12 +25,17 @@ export class MachineState {
     public deltas: Array<Delta> = [],
     public tape: Array<string> = [],
     public head: number = 0,
+    public alphabet: Array<string> = [EMPTY_INPUT],
     public text: string = '',
   ) {
     // Deep copy input to avoid touching the original object references
     this.states = deepCopy(this.states);
     this.deltas = deepCopy(this.deltas);
     this.tape = deepCopy(this.tape);
+    this.alphabet = deepCopy(this.alphabet);
+    if (!this.alphabet.includes(EMPTY_INPUT)) {
+      this.alphabet.push(EMPTY_INPUT);
+    }
   }
 }
 

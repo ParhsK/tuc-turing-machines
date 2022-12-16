@@ -1,3 +1,4 @@
+import { state } from '@angular/animations';
 import { EventEmitter, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, EMPTY, Subject } from 'rxjs';
@@ -10,6 +11,7 @@ import {
   EMPTY_INPUT,
   Action,
   MachineState,
+  replaceEmptyCharacter,
 } from './utils';
 
 @Injectable({
@@ -43,9 +45,6 @@ export class TuringMachineService {
 
 
   constructor( private _snackBar: MatSnackBar ) {
-    this.addToAlphabet(EMPTY_INPUT);
-    this.addToAlphabet('a');
-    this.addToAlphabet('b');
   }
 
   set states(val: Array<State>) {
@@ -75,6 +74,7 @@ export class TuringMachineService {
     return JSON.stringify({
       states: this.states,
       deltas: this.deltas,
+      alphabet: Array.from(this._alphabet),
       tape: this.tape,
       head: this.head,
       text: this.text,
@@ -86,11 +86,15 @@ export class TuringMachineService {
       'machine',
       this.serializeMachineState()
     );
+    console.log('Saving new machine ', this.serializeMachineState());
+
   }
 
   // Read stored machine state from localStorage, deserialize and initialize machine
   loadMachineState(): void {
     const machineState = this.deserializeMachineState();
+    console.log(machineState);
+
     this.setAll(machineState);
   }
 
@@ -100,11 +104,14 @@ export class TuringMachineService {
       return new MachineState([], [], []);
     }
     const jsonMachineState = JSON.parse(serializedState);
+    console.log('serializedState', serializedState);
+
     return new MachineState(
       jsonMachineState.states,
       jsonMachineState.deltas,
       jsonMachineState.tape,
       jsonMachineState.head,
+      jsonMachineState.alphabet,
       jsonMachineState.text
     );
   }
@@ -114,12 +121,13 @@ export class TuringMachineService {
   }
 
   setAll(machineState: MachineState) {
-    this.newTape(machineState.tape);
     this.states = machineState.states;
     this.deltas = machineState.deltas;
     this.currentState = this.getInitialState();
-    this.head = machineState.head;
+    this._alphabet = new Set(machineState.alphabet);
     this.text = machineState.text;
+    this.newTape(machineState.tape);
+    this.head = machineState.head;
     this.saveMachineState();
   }
 
@@ -152,6 +160,9 @@ export class TuringMachineService {
   }
 
   getMaxStateId(): number {
+    if (this.states.length === 0) {
+      return 0;
+    }
     return this.states[this.states.length - 1].id + 1;
   }
 
@@ -159,6 +170,7 @@ export class TuringMachineService {
     this._alphabet.add(symbol);
     this.alphabetChange$.next(this._alphabet);
     this.redrawEmitter.emit();
+    this.saveMachineState();
   }
 
   deleteFromAlphabet(symbol: string): void {
@@ -176,6 +188,7 @@ export class TuringMachineService {
     this.updateStatesSubject();
     this.stateDialogOpen.emit(newState.id);
     this.redrawEmitter.emit();
+    this.saveMachineState();
   }
 
   changeStatePosition(stateId: number, x: string, y: string): void {
@@ -185,6 +198,7 @@ export class TuringMachineService {
     }
     state.translateX = x;
     state.translateY = y;
+    this.saveMachineState();
   }
 
   addDelta(
@@ -213,6 +227,7 @@ export class TuringMachineService {
     newDeltas.push(newDelta);
     this.deltas = newDeltas;
     this.redrawEmitter.emit();
+    this.saveMachineState();
   }
 
   addAction(stateId: number, action: string): void {
@@ -220,12 +235,14 @@ export class TuringMachineService {
     state?.actions.push(action);
     this.updateStatesSubject();
     this.redrawEmitter.emit();
+    this.saveMachineState();
   }
 
   deleteAction(stateId: number): void {
     const state = this.getStateById(stateId);
     state?.actions.pop();
     this.redrawEmitter.emit();
+    this.saveMachineState();
   }
 
   deleteDelta(stateId: number, input: Array<string>, newStateId: number): void {
@@ -248,6 +265,7 @@ export class TuringMachineService {
     newDeltas.splice(index, 1);
     this.deltas = newDeltas;
     this.redrawEmitter.emit();
+    this.saveMachineState();
   }
 
   deleteState(stateId: number): void {
@@ -266,6 +284,7 @@ export class TuringMachineService {
     );
     this.updateStatesSubject();
     this.redrawEmitter.emit();
+    this.saveMachineState();
   }
 
   getStateById(stateId: number): State | undefined {
@@ -295,20 +314,25 @@ export class TuringMachineService {
     return false;
   }
 
-  validateTape(tape: Array<string>): boolean {
+  validateTape(tape: Array<string>): { result: boolean, symbol: string | undefined} {
     for (let i = 0; i < tape.length; i++) {
       if (!this._alphabet.has(tape[i])) {
-        return false
+        return { result: false, symbol: tape[i] }
       }
     }
-    return true;
+    return { result: true, symbol: undefined };
+  }
+
+  idExists(stateId: number): boolean {
+    return this._states.map((state) => state.id).includes(stateId);
   }
 
   newTape(tape: Array<string>) {
     let newTape = tape;
     // Check if all characters are in alphabet
-    if (!this.validateTape(tape)) {
-      this._snackBar.open('Some symbol does not exist in alphabet', 'Close', {horizontalPosition: 'right', duration: 0})
+    const tapeValidation = this.validateTape(tape);
+    if (!tapeValidation.result) {
+      this._snackBar.open(`Symbol ${replaceEmptyCharacter(tapeValidation.symbol!)} does not exist in alphabet`, 'Close', {horizontalPosition: 'right', duration: 0})
       return this.tape;
     }
     // Enforce starts with empty
@@ -321,6 +345,7 @@ export class TuringMachineService {
     }
     this.tape = newTape;
     this.head = 0;
+    this.saveMachineState();
     return this.tape;
   }
 
@@ -328,14 +353,17 @@ export class TuringMachineService {
     this.tape.pop();
     this.tape.push(symbol);
     this.tape.push(EMPTY_INPUT);
+    this.saveMachineState();
   }
 
   deleteFromTape() {
     this.tape.pop();
+    this.saveMachineState();
   }
 
   emptyTape() {
     this.tape.splice(0, this.tape.length);
+    this.saveMachineState();
   }
 
   performActions(): void {
