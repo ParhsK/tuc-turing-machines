@@ -14,9 +14,6 @@
   justify-content: center;
 }
 
-.current-state {
-  color: red;
-}
 
 .state-overlay {
   position: absolute;
@@ -55,4 +52,8 @@
   font-style: italic;
   font-weight: 400;
   width: 1.3ch;
+}
+
+.current-state .current-action {
+  color: red;
 }

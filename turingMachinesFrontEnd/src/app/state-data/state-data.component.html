@@ -29,6 +29,16 @@
       <mat-icon>delete</mat-icon>
     </button>
     <mat-form-field>
+      <mat-label>Line type</mat-label>
+      <mat-select [(ngModel)]="delta.lineType" (ngModelChange)="turingMachine.redrawEmitter.emit()">
+        <mat-option value="straight">Straight</mat-option>
+        <mat-option value="arc">Arc</mat-option>
+        <mat-option value="fluid">Fluid</mat-option>
+        <mat-option value="magnet">Magnet</mat-option>
+        <mat-option value="grid">Grid</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
       <mat-label>Start anchor</mat-label>
       <mat-select [(ngModel)]="delta.startSocket" (ngModelChange)="turingMachine.redrawEmitter.emit()">
         <mat-option value="top">Top</mat-option>

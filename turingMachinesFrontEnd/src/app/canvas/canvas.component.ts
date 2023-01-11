@@ -76,8 +76,8 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         const leaderLineConfig = {
           color: 'black',
           path: 'fluid',
-          startSocket: 'top',
-          endSocket: 'right',
+          startSocket: 'right',
+          endSocket: 'top',
           middleLabel: this.generateCaptionLabel(delta),
         };
 
@@ -96,10 +96,10 @@ export class CanvasComponent implements OnInit, AfterViewInit {
 
       const leaderLineConfig = {
         color: 'black',
-        path: 'grid',
+        path: delta.lineType,
         startSocket: delta.startSocket,
         endSocket: delta.endSocket,
-        startLabel: this.generateCaptionLabel(delta),
+        middleLabel: this.generateCaptionLabel(delta),
       };
 
       if (isCurrentDelta) {
@@ -137,8 +137,11 @@ export class CanvasComponent implements OnInit, AfterViewInit {
     }
 
     const options = {
-      color: 'black',
+      color: 'rgba(80, 0, 255, 1)',
       // offset: [1000, 1000],
+      // color: 'rgb(255, 255, 255)',
+      // outlineColor: 'rgb(0, 0, 0)',
+      fontWeight: 'bold',
       lineOffset: 50,
     };
     return LeaderLine.captionLabel(text, options);

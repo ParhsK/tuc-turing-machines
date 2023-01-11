@@ -40,6 +40,7 @@ export class TuringMachineService {
   head = 0;
   currentState?: State;
   currentDeltaIndex?: number;
+  currentActionIndex = 0;
   paused = false;
   speed = 2;
 
@@ -366,9 +367,10 @@ export class TuringMachineService {
     this.saveMachineState();
   }
 
-  performActions(): void {
-    console.log(this.currentState?.actions);
-    this.currentState?.actions.forEach((action) => {
+  async performActions(): Promise<void> {
+    const currentActions = this.currentState?.actions ?? [];
+    for (const [index, action] of currentActions.entries()) {
+      this.currentActionIndex = index;
       switch (action) {
         case Action.MOVE_RIGHT:
           this.head++;
@@ -442,7 +444,8 @@ export class TuringMachineService {
           }
           this.tape[this.head] = action;
       }
-    });
+      await sleep(500);
+    }
     if (this.head > this.tape.length - 1) {
       const currentLength = this.tape.length;
       const targetLength = this.head + 1;
@@ -484,7 +487,7 @@ export class TuringMachineService {
       await this.stepRun();
     };
     // stepRun will take us to the last state but we still need to run the actions
-    this.performActions();
+    await this.performActions();
     return;
   }
 

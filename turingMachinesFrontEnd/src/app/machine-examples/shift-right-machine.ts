@@ -14,21 +14,21 @@ export const shiftRightMachine = {
       1,
       StateType.MIDDLE_STATE,
       [Action.WRITE_EMPTY, Action.MOVE_RIGHT, Action.WRITE_X, Action.MOVE_LEFT],
-      '865',
-      '120'
+      '866',
+      '116'
     ),
     new State(
       2,
       StateType.FINAL_STATE,
       [Action.SEARCH_RIGHT_EMPTY, Action.SEARCH_RIGHT_EMPTY],
-      '530',
-      '260'
+      '521',
+      '262'
     ),
   ],
   deltas: [
-    new Delta(0, ['a', 'b'], 1),
-    new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'top', 'top'),
-    new Delta(0, [EMPTY_INPUT], 2, 'bottom', 'top'),
+    new Delta(0, ['a', 'b'], 1, 'grid'),
+    new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'grid', 'top', 'top'),
+    new Delta(0, [EMPTY_INPUT], 2, 'grid', 'bottom', 'top'),
   ],
   tape: [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT],
   head: 6,
