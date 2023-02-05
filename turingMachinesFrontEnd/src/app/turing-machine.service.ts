@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import { EventEmitter, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, EMPTY, Subject } from 'rxjs';
@@ -30,7 +29,6 @@ export class TuringMachineService {
   private alphabetChange$ = new BehaviorSubject<Set<string>>(this._alphabet);
   public alphabet$ = this.deltaChange$.asObservable();
 
-
   public stateDialogOpen = new EventEmitter();
   public redrawEmitter = new EventEmitter();
 
@@ -44,9 +42,7 @@ export class TuringMachineService {
   paused = false;
   speed = 2;
 
-
-  constructor( private _snackBar: MatSnackBar ) {
-  }
+  constructor(private _snackBar: MatSnackBar) {}
 
   set states(val: Array<State>) {
     this._states = val;
@@ -83,12 +79,7 @@ export class TuringMachineService {
   }
 
   saveMachineState() {
-    localStorage.setItem(
-      'machine',
-      this.serializeMachineState()
-    );
-    console.log('Saving new machine ', this.serializeMachineState());
-
+    localStorage.setItem('machine', this.serializeMachineState());
   }
 
   // Read stored machine state from localStorage, deserialize and initialize machine
@@ -105,11 +96,30 @@ export class TuringMachineService {
       return new MachineState([], [], []);
     }
     const jsonMachineState = JSON.parse(serializedState);
-    console.log('serializedState', serializedState);
+    const states = jsonMachineState.states.map((jsonState: any) => {
+      return new State(
+        jsonState['id'],
+        jsonState['type'],
+        jsonState['actions'],
+        jsonState['translateX'],
+        jsonState['translateY'],
+      );
+    });
+    const deltas = jsonMachineState.deltas.map((jsonDelta: any) => {
+      return new Delta(
+        jsonDelta['prevStateId'],
+        jsonDelta['input'],
+        jsonDelta['newStateId'],
+        jsonDelta['lineType'],
+        jsonDelta['startSocket'],
+        jsonDelta['endSocket'],
+        jsonDelta['text'],
+      )
+    })
 
     return new MachineState(
-      jsonMachineState.states,
-      jsonMachineState.deltas,
+      states,
+      deltas,
       jsonMachineState.tape,
       jsonMachineState.head,
       jsonMachineState.alphabet,
@@ -143,7 +153,7 @@ export class TuringMachineService {
       }
       return false;
     });
-    const currentDelta = this.deltas[currentDeltaIndex]
+    const currentDelta = this.deltas[currentDeltaIndex];
     if (currentDelta === undefined) {
       throw Error('undefined delta result');
     }
@@ -222,7 +232,10 @@ export class TuringMachineService {
     });
     if (!isOk) {
       // alert('This delta makes the machine non-deterministic or already exists');
-      this._snackBar.open('This transition function makes the machine non-deterministic or already exists', 'close');
+      this._snackBar.open(
+        'This transition function makes the machine non-deterministic or already exists',
+        'close'
+      );
       return;
     }
     newDeltas.push(newDelta);
@@ -258,7 +271,10 @@ export class TuringMachineService {
       return false;
     });
     if (index === -1) {
-      this._snackBar.open('Transition function not found', 'Close', {horizontalPosition: 'right', duration: 0})
+      this._snackBar.open('Transition function not found', 'Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
       console.log('Transition function not found!');
       return;
     }
@@ -308,17 +324,23 @@ export class TuringMachineService {
 
   isFinal(): boolean {
     if (this.currentState?.type === StateType.FINAL_STATE) {
-      this._snackBar.open('Machine is in a final state', 'Close', {horizontalPosition: 'right', duration: 0})
+      this._snackBar.open('Machine is in a final state', 'Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
       console.log('Machine is in a final state.');
       return true;
     }
     return false;
   }
 
-  validateTape(tape: Array<string>): { result: boolean, symbol: string | undefined} {
+  validateTape(tape: Array<string>): {
+    result: boolean;
+    symbol: string | undefined;
+  } {
     for (let i = 0; i < tape.length; i++) {
       if (!this._alphabet.has(tape[i])) {
-        return { result: false, symbol: tape[i] }
+        return { result: false, symbol: tape[i] };
       }
     }
     return { result: true, symbol: undefined };
@@ -333,7 +355,13 @@ export class TuringMachineService {
     // Check if all characters are in alphabet
     const tapeValidation = this.validateTape(tape);
     if (!tapeValidation.result) {
-      this._snackBar.open(`Symbol ${replaceEmptyCharacter(tapeValidation.symbol!)} does not exist in alphabet`, 'Close', {horizontalPosition: 'right', duration: 0})
+      this._snackBar.open(
+        `Symbol ${replaceEmptyCharacter(
+          tapeValidation.symbol!
+        )} does not exist in alphabet`,
+        'Close',
+        { horizontalPosition: 'right', duration: 0 }
+      );
       return this.tape;
     }
     // Enforce starts with empty
@@ -370,6 +398,7 @@ export class TuringMachineService {
   async performActions(): Promise<void> {
     const currentActions = this.currentState?.actions ?? [];
     for (const [index, action] of currentActions.entries()) {
+      console.log(action);
       this.currentActionIndex = index;
       switch (action) {
         case Action.MOVE_RIGHT:
@@ -377,7 +406,10 @@ export class TuringMachineService {
           break;
         case Action.MOVE_LEFT:
           if (this.head === 0) {
-            this._snackBar.open('unable to move further left', 'Close', {horizontalPosition: 'right', duration: 0})
+            this._snackBar.open('unable to move further left', 'Close', {
+              horizontalPosition: 'right',
+              duration: 0,
+            });
             throw Error('unable to move further left');
           }
           this.head--;
@@ -392,7 +424,11 @@ export class TuringMachineService {
           break;
         case Action.SEARCH_LEFT_EMPTY:
           if (this.head === 0) {
-            this._snackBar.open('unable to move further left, empty symbol was not found', 'Close', {horizontalPosition: 'right', duration: 0})
+            this._snackBar.open(
+              'unable to move further left, empty symbol was not found',
+              'Close',
+              { horizontalPosition: 'right', duration: 0 }
+            );
             throw Error(
               'unable to move further left, empty symbol was not found'
             );
@@ -425,18 +461,28 @@ export class TuringMachineService {
               break;
             }
           }
-          this._snackBar.open('unable to move further left, symbol was not found', 'Close', {horizontalPosition: 'right', duration: 0})
+          this._snackBar.open(
+            'unable to move further left, symbol was not found',
+            'Close',
+            { horizontalPosition: 'right', duration: 0 }
+          );
           throw Error('unable to move further left, symbol was not found');
         case Action.MARK:
           this.tape[this.head] = 'd';
           break;
         case Action.DECISION_YES:
           // alert('Yes');
-          this._snackBar.open('Yes', 'Close', {horizontalPosition: 'right', duration: 0});
+          this._snackBar.open('Yes', 'Close', {
+            horizontalPosition: 'right',
+            duration: 0,
+          });
           break;
         case Action.DECISION_NO:
           // alert('No');
-          this._snackBar.open('No', 'Close', {horizontalPosition: 'right', duration: 0});
+          this._snackBar.open('No', 'Close', {
+            horizontalPosition: 'right',
+            duration: 0,
+          });
           break;
         default:
           if (!this._alphabet.has(action)) {
@@ -444,7 +490,7 @@ export class TuringMachineService {
           }
           this.tape[this.head] = action;
       }
-      await sleep(500);
+      await sleep(500 - this.speed * 100);
     }
     if (this.head > this.tape.length - 1) {
       const currentLength = this.tape.length;
@@ -478,14 +524,14 @@ export class TuringMachineService {
   async machineRun(): Promise<void> {
     // this.loadMachineState();
     this.currentState = this.getInitialState();
-    while (this.isFinal() === false ) {
+    while (this.isFinal() === false) {
       if (this.paused) {
         // Sleep to give control back to the browser
         await sleep(500);
         continue;
       }
       await this.stepRun();
-    };
+    }
     // stepRun will take us to the last state but we still need to run the actions
     await this.performActions();
     return;
@@ -494,11 +540,17 @@ export class TuringMachineService {
   machinePauseResume(): void {
     this.paused = !this.paused;
     if (this.paused) {
-      console.log('Paused')
-      console.log('currentState:', this.currentState)
-      this._snackBar.open('The machine is paused.', 'Close', {horizontalPosition: 'right', duration: 0})
+      console.log('Paused');
+      console.log('currentState:', this.currentState);
+      this._snackBar.open('The machine is paused.', 'Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
     } else {
-      this._snackBar.open('The machine is resumed.', 'Close', {horizontalPosition: 'right', duration: 0})
+      this._snackBar.open('The machine is resumed.', 'Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
     }
   }
 
@@ -507,18 +559,24 @@ export class TuringMachineService {
   }
 
   async stepRun(): Promise<void> {
-    this.performActions();
+    await this.performActions();
     this.input = this.tape[this.head];
     if (this.currentState === undefined) {
-      this._snackBar.open('undefined current state', 'Close', {horizontalPosition: 'right', duration: 0})
+      this._snackBar.open('undefined current state', 'Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
       throw Error('undefined current state');
     }
     if (this.currentState.type === StateType.FINAL_STATE) {
-      this._snackBar.open('The machine has finished!', 'Close', {horizontalPosition: 'right', duration: 0})
+      this._snackBar.open('The machine has finished!', 'Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
       return;
     }
     console.log('Current state id is', this.currentState.id);
-    const currentDelta = this.getCurrentDelta(this.currentState, this.input)
+    const currentDelta = this.getCurrentDelta(this.currentState, this.input);
     this.redrawEmitter.emit();
     await sleep(500 - this.speed * 100);
     this.currentState = this.getNextState(currentDelta);
@@ -545,7 +603,10 @@ export class TuringMachineService {
 
   moveHeadLeft(): void {
     if (this.head === 0) {
-      this._snackBar.open('unable to move further left', 'Close', {horizontalPosition: 'right', duration: 0})
+      this._snackBar.open('unable to move further left', 'Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
       throw Error('unable to move further left');
     }
     this.head--;

@@ -11,3 +11,18 @@
 .edgepath {
   marker-end: url(https://turingmachine.io/#arrowhead);
 }
+
+.tuc-logo {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.tuc-logo img {
+  width: 75px;
+}
+
+.tuc-logo div {
+  font-weight: bold;
+  color: #8A232E;
+}

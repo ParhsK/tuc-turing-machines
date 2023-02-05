@@ -37,6 +37,9 @@ mat-radio-button {
 
 .title {
   text-align: center;
+  color:#3511a1;
+  cursor: pointer;
+  background-color: rgba(128, 128, 128, 0.1);
 }
 
 /* Removes arrow for increment in input of type number */

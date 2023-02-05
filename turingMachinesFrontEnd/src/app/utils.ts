@@ -16,6 +16,7 @@ export class Delta {
     public lineType: 'straight' | 'arc' | 'fluid' | 'magnet' | 'grid' = 'grid',
     public startSocket: 'right' | 'top' | 'bottom' | 'left' = 'right',
     public endSocket: 'right' | 'top' | 'bottom' | 'left' = 'left',
+    public text: string = '',
   ) {
   }
 }

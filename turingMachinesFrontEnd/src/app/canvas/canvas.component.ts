@@ -116,6 +116,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   generateCaptionLabel(delta: Delta): string {
+    if (delta.text !== '') {
+      return delta.text;
+    }
     let missingCharacters = 0;
     let lastMissingCharacter = undefined;
     this.turingMachine._alphabet.forEach((character) => {

@@ -20,4 +20,10 @@ export class TapeComponent implements OnInit {
   openDialog(): void {
     this.dialog.open(TapeDataComponent, {});
   }
+
+  scrollToHead() {
+    const head = document.getElementsByClassName('head')[0];
+    head.scrollIntoView();
+  }
+
 }

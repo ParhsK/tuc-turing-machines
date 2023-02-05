@@ -1,77 +1,82 @@
-<h1 style="color:#3511a1" class="title" >id: {{state?.id}}</h1>
-<mat-radio-group color="primary" *ngIf="state" [(ngModel)]="state.type">
-  <h2>Node Type</h2>
-  <mat-radio-button class="state-radio-button" *ngFor="let stateType of stateTypes" [value]="stateType">{{stateType}}
-  </mat-radio-button>
-</mat-radio-group>
-<br>
-<br>
-<div class="actions-container">
-  <h2>Actions: <span class="actions">{{stateActions}}</span>
-  <button mat-button (click)="onActionDeleteClicked(state!.id)">
-    <mat-icon>backspace</mat-icon>
-  </button></h2>
-</div>
-<div class="actions-button-container">
-  <button class="button" *ngFor="let action of allActions" mat-button
-    (click)="onActionClicked(state!.id, action)">{{action}}</button>
-</div>
-<div>
-  <button class="button" *ngFor="let action of alphabetActions" mat-button
-    (click)="onActionClicked(state!.id, action)">{{action}}</button>
-</div>
-<div class="deltas-container">
-  <h2>Transition Functions</h2>
-  <li class="delta" *ngFor="let delta of deltas">
-    {{delta.prevStateId}} <mat-icon>arrow_right_alt</mat-icon> {{delta.newStateId}} / {{
-    replaceEmptyCharacter(delta.input) }}
-    <button mat-button (click)="onDeltaDeleteClicked(delta)" class="add-button-container">
-      <mat-icon>delete</mat-icon>
+<div
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+>
+  <h1 class="title" cdkDragHandle>id: {{state?.id}}</h1>
+  <mat-radio-group color="primary" *ngIf="state" [(ngModel)]="state.type">
+    <h2>Node Type</h2>
+    <mat-radio-button class="state-radio-button" *ngFor="let stateType of stateTypes" [value]="stateType">{{stateType}}
+    </mat-radio-button>
+  </mat-radio-group>
+  <br>
+  <br>
+  <div class="actions-container">
+    <h2>Actions: <span class="actions">{{stateActions}}</span>
+    <button mat-button (click)="onActionDeleteClicked(state!.id)">
+      <mat-icon>backspace</mat-icon>
+    </button></h2>
+  </div>
+  <div class="actions-button-container">
+    <button class="button" *ngFor="let action of allActions" mat-button
+      (click)="onActionClicked(state!.id, action)">{{action}}</button>
+  </div>
+  <div>
+    <button class="button" *ngFor="let action of alphabetActions" mat-button
+      (click)="onActionClicked(state!.id, action)">{{action}}</button>
+  </div>
+  <div class="deltas-container">
+    <h2>Transition Functions</h2>
+    <li class="delta" *ngFor="let delta of deltas">
+      {{delta.prevStateId}} <mat-icon>arrow_right_alt</mat-icon> {{delta.newStateId}} / {{
+      replaceEmptyCharacter(delta.input) }}
+      <button mat-button (click)="onDeltaDeleteClicked(delta)" class="add-button-container">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <mat-form-field>
+        <mat-label>Line type</mat-label>
+        <mat-select [(ngModel)]="delta.lineType" (ngModelChange)="turingMachine.redrawEmitter.emit()">
+          <mat-option value="straight">Straight</mat-option>
+          <mat-option value="arc">Arc</mat-option>
+          <mat-option value="fluid">Fluid</mat-option>
+          <mat-option value="magnet">Magnet</mat-option>
+          <mat-option value="grid">Grid</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Start anchor</mat-label>
+        <mat-select [(ngModel)]="delta.startSocket" (ngModelChange)="turingMachine.redrawEmitter.emit()">
+          <mat-option value="top">Top</mat-option>
+          <mat-option value="bottom">Bottom</mat-option>
+          <mat-option value="left">Left</mat-option>
+          <mat-option value="right">Right</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>End anchor</mat-label>
+        <mat-select [(ngModel)]="delta.endSocket" (ngModelChange)="turingMachine.redrawEmitter.emit()">
+          <mat-option value="top">Top</mat-option>
+          <mat-option value="bottom">Bottom</mat-option>
+          <mat-option value="left">Left</mat-option>
+          <mat-option value="right">Right</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </li>
+  </div>
+  <h2>Add transition function(δ)
+    <p></p>
+    <mat-form-field>
+      <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next Node">
+    </mat-form-field> /
+    <mat-form-field>
+      <input matInput [(ngModel)]="input" placeholder="Input">
+    </mat-form-field>
+    <button mat-button class="button" (click)="onDeltaAddClicked()">
+      <mat-icon>add</mat-icon>
     </button>
-    <mat-form-field>
-      <mat-label>Line type</mat-label>
-      <mat-select [(ngModel)]="delta.lineType" (ngModelChange)="turingMachine.redrawEmitter.emit()">
-        <mat-option value="straight">Straight</mat-option>
-        <mat-option value="arc">Arc</mat-option>
-        <mat-option value="fluid">Fluid</mat-option>
-        <mat-option value="magnet">Magnet</mat-option>
-        <mat-option value="grid">Grid</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Start anchor</mat-label>
-      <mat-select [(ngModel)]="delta.startSocket" (ngModelChange)="turingMachine.redrawEmitter.emit()">
-        <mat-option value="top">Top</mat-option>
-        <mat-option value="bottom">Bottom</mat-option>
-        <mat-option value="left">Left</mat-option>
-        <mat-option value="right">Right</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>End anchor</mat-label>
-      <mat-select [(ngModel)]="delta.endSocket" (ngModelChange)="turingMachine.redrawEmitter.emit()">
-        <mat-option value="top">Top</mat-option>
-        <mat-option value="bottom">Bottom</mat-option>
-        <mat-option value="left">Left</mat-option>
-        <mat-option value="right">Right</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </li>
-</div>
-<h2>Add transition function(δ)
-  <p></p>
-  <mat-form-field>
-    <input matInput [(ngModel)]="nextStateId" type="number" placeholder="Next Node">
-  </mat-form-field> /
-  <mat-form-field>
-    <input matInput [(ngModel)]="input" placeholder="Input">
-  </mat-form-field>
-  <button mat-button class="button" (click)="onDeltaAddClicked()">
-    <mat-icon>add</mat-icon>
-  </button>
-</h2>
-<div class="deleteButton">
-  <button mat-button class="button" (click)="onStateDeleteClicked(state?.id!)" mat-dialog-close>
-    <mat-icon>delete</mat-icon>
-  Delete Node</button>
+  </h2>
+  <div class="deleteButton">
+    <button mat-button class="button" (click)="onStateDeleteClicked(state?.id!)" mat-dialog-close>
+      <mat-icon>delete</mat-icon>
+    Delete Node</button>
+  </div>
 </div>
