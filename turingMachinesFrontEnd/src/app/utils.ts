@@ -13,10 +13,10 @@ export class Delta {
     public prevStateId: number,
     public input: Array<string>,
     public newStateId: number,
+    public text: string = '',
     public lineType: 'straight' | 'arc' | 'fluid' | 'magnet' | 'grid' = 'grid',
     public startSocket: 'right' | 'top' | 'bottom' | 'left' = 'right',
     public endSocket: 'right' | 'top' | 'bottom' | 'left' = 'left',
-    public text: string = '',
   ) {
   }
 }
@@ -58,7 +58,9 @@ export enum Action {
   WRITE_X = 'X',
   MARK = 'd',
   DECISION_YES = 'y',
-  DECISION_NO = 'n'
+  DECISION_NO = 'n',
+  COPY = 'C',
+  SHIFT_RIGHT = 'Sr'
 }
 
 export const EMPTY_INPUT = ' ';

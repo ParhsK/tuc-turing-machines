@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { copyMachine } from '../machine-examples/copy-machine';
 import { decisionMachine } from '../machine-examples/decision-machine';
 import { shiftRightMachine } from '../machine-examples/shift-right-machine';
@@ -7,6 +7,7 @@ import { TuringMachineService } from '../turing-machine.service';
 import { MachineState } from '../utils';
 import { MatDialog } from '@angular/material/dialog';
 import { NewDeltaDataComponent } from '../new-delta-data/new-delta-data.component';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-toolbar',
@@ -14,12 +15,15 @@ import { NewDeltaDataComponent } from '../new-delta-data/new-delta-data.componen
   styleUrls: ['./toolbar.component.css'],
 })
 export class ToolbarComponent implements OnInit {
+  @ViewChild('optionsMenuTrigger') optionsMenuTrigger!: MatMenuTrigger;
+
   constructor(
     public turingMachine: TuringMachineService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   openNewDeltaDialog() {
     const dialogRef = this.dialog.open(NewDeltaDataComponent);
@@ -40,6 +44,9 @@ export class ToolbarComponent implements OnInit {
     this.turingMachine.machineRun();
   }
 
+  onResetClicked(): void {
+  }
+
   onStepRunClicked(): void {
     this.turingMachine.stepRun();
   }
@@ -47,6 +54,42 @@ export class ToolbarComponent implements OnInit {
   onPauseClicked(): void {
     this.turingMachine.machinePauseResume();
   }
+
+  onUploadClicked(): void {
+  }
+
+  onDownloadClicked(): void {
+    this.turingMachine.download();
+  }
+
+  onSaveAsPngClicked(): void {
+    this.optionsMenuTrigger.closeMenu();
+    setTimeout(() => {
+      window.print();
+    });
+  }
+
+  uploadFile() {
+    let file: File;
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.click();
+
+    fileInput.onchange = (event) => {
+      const target = event.target as HTMLInputElement;
+      if (!target.files || target.files?.length === 0) {
+        return;
+      }
+      file = target.files[0];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = () => {
+        const fileMachineState = reader.result as string;
+        this.turingMachine.loadMachineState(fileMachineState);
+      };
+    };
+  }
+
 
   onMyTuringMachineClicked(): void {
     this.turingMachine.setAll(

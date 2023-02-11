@@ -11,6 +11,7 @@ export class NewDeltaDataComponent implements OnInit {
   startingNodeId?: number;
   input: string = '';
   endingNodeId?: number;
+  text: string = '';
 
   constructor(
     public turingMachine: TuringMachineService
@@ -36,6 +37,6 @@ export class NewDeltaDataComponent implements OnInit {
       throw Error('ending Node Id does not exist');
     }
     console.log(this.startingNodeId, this.input, this.endingNodeId);
-    this.turingMachine.addDelta(this.startingNodeId, this.input.split(''), this.endingNodeId);
+    this.turingMachine.addDelta(this.startingNodeId, this.input.split(''), this.endingNodeId, this.text);
   }
 }

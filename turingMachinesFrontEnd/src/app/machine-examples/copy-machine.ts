@@ -8,10 +8,10 @@ export const copyMachine = {
     new State(3, StateType.FINAL_STATE, [Action.SEARCH_RIGHT_EMPTY], '268', '302')
   ],
   deltas: [
-    new Delta(0, ['a', 'b', EMPTY_INPUT], 1, 'grid', 'right', 'left'),
-    new Delta(1, ['a', 'b'], 2, 'grid', 'right', 'left'),
-    new Delta(2, ['a', 'b', EMPTY_INPUT], 1, 'grid', 'right', 'top'),
-    new Delta(1, [EMPTY_INPUT], 3, 'grid', 'bottom', 'top')
+    new Delta(0, ['a', 'b', EMPTY_INPUT], 1, '', 'grid', 'right', 'left'),
+    new Delta(1, ['a', 'b'], 2, '', 'grid', 'right', 'left'),
+    new Delta(2, ['a', 'b', EMPTY_INPUT], 1, '', 'grid', 'right', 'top'),
+    new Delta(1, [EMPTY_INPUT], 3, '', 'grid', 'bottom', 'top')
   ],
   tape: [EMPTY_INPUT, 'a', 'b', 'a', EMPTY_INPUT, EMPTY_INPUT, EMPTY_INPUT],
   head: 4,

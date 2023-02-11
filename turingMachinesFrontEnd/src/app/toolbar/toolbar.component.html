@@ -1,29 +1,30 @@
 <mat-toolbar color="primary">
   <button class="button" mat-button [matMenuTriggerFor]="menu">Machines</button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item class="button" (click)="onMyTuringMachineClicked()">MyTuringMachine
-    </button>
-    <button mat-menu-item class="button" (click)="onCopyingMachineClicked()">CopyingMachine
-    </button>
-    <button mat-menu-item class="button" (click)="onShiftMachineClicked()">RightShiftingMachine
-    </button>
-    <button mat-menu-item class="button" (click)="onDecisionMachineClicked()">DecidingMachine
-    </button>
+    <button mat-menu-item class="button" (click)="onMyTuringMachineClicked()">MyTuringMachine</button>
+    <button mat-menu-item class="button" (click)="onCopyingMachineClicked()">CopyingMachine</button>
+    <button mat-menu-item class="button" (click)="onShiftMachineClicked()">RightShiftingMachine</button>
+    <button mat-menu-item class="button" (click)="onDecisionMachineClicked()">DecidingMachine</button>
+  </mat-menu>
+  <button class="button" mat-button [matMenuTriggerFor]="options">Options</button>
+  <mat-menu #options="matMenu">
+    <button mat-menu-item class="button" (click)="onDownloadClicked()">Download Machine as JSON</button>
+    <button mat-menu-item class="button" (click)="uploadFile()">Upload file</button>
+    <button mat-menu-item class="button" (click)="onSaveAsPngClicked()">Save Machine as .pdf</button>
   </mat-menu>
   <span class="spacer"></span>
   <button class="button" mat-button (click)="onStepRunClicked()">
     <mat-icon>play_arrow</mat-icon> Step
   </button>
   <button class="button" mat-button (click)="onPlayClicked()">
-    <mat-icon>play_circle_outline</mat-icon> Initialize
+    <mat-icon>play_circle_outline</mat-icon> Run
   </button>
   <button *ngIf="turingMachine.paused" class="button" mat-button (click)="onPauseClicked()">
-      <mat-icon>play_circle_outline</mat-icon> Resume
+    <mat-icon>play_circle_outline</mat-icon> Resume
   </button>
   <button *ngIf="!turingMachine.paused" class="button" mat-button (click)="onPauseClicked()">
     <mat-icon>pause_circle_outline</mat-icon> Pause
   </button>
-
   <button class="button" mat-button [matMenuTriggerFor]="slider">Animation Speed</button>
   <mat-menu #slider="matMenu">
     <mat-slider color="primary" discrete min="1" max="5" value="2" (valueChange)="updateSpeed($event)">

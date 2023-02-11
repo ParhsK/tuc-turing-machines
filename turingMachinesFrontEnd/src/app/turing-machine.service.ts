@@ -27,7 +27,7 @@ export class TuringMachineService {
 
   public _alphabet: Set<string> = new Set<string>();
   private alphabetChange$ = new BehaviorSubject<Set<string>>(this._alphabet);
-  public alphabet$ = this.deltaChange$.asObservable();
+  public alphabet$ = this.alphabetChange$.asObservable();
 
   public stateDialogOpen = new EventEmitter();
   public redrawEmitter = new EventEmitter();
@@ -83,18 +83,23 @@ export class TuringMachineService {
   }
 
   // Read stored machine state from localStorage, deserialize and initialize machine
-  loadMachineState(): void {
-    const machineState = this.deserializeMachineState();
+  loadMachineState(serializedStateInput?: string): void {
+    let machineState = new MachineState([], [], []);
+    const localMachineState = localStorage.getItem('machine');
+    if (localMachineState) {
+      console.log("Loading machine from memory");
+      machineState = this.deserializeMachineState(localMachineState);
+    }
+    if (serializedStateInput) {
+      console.log("Loading machine from file");
+      machineState = this.deserializeMachineState(serializedStateInput);
+    }
     console.log(machineState);
 
     this.setAll(machineState);
   }
 
-  deserializeMachineState(): MachineState {
-    const serializedState = localStorage.getItem('machine');
-    if (!serializedState) {
-      return new MachineState([], [], []);
-    }
+  deserializeMachineState(serializedState: string): MachineState {
     const jsonMachineState = JSON.parse(serializedState);
     const states = jsonMachineState.states.map((jsonState: any) => {
       return new State(
@@ -102,7 +107,7 @@ export class TuringMachineService {
         jsonState['type'],
         jsonState['actions'],
         jsonState['translateX'],
-        jsonState['translateY'],
+        jsonState['translateY']
       );
     });
     const deltas = jsonMachineState.deltas.map((jsonDelta: any) => {
@@ -110,12 +115,12 @@ export class TuringMachineService {
         jsonDelta['prevStateId'],
         jsonDelta['input'],
         jsonDelta['newStateId'],
+        jsonDelta['text'],
         jsonDelta['lineType'],
         jsonDelta['startSocket'],
-        jsonDelta['endSocket'],
-        jsonDelta['text'],
-      )
-    })
+        jsonDelta['endSocket']
+      );
+    });
 
     return new MachineState(
       states,
@@ -215,9 +220,10 @@ export class TuringMachineService {
   addDelta(
     currentStateId: number,
     input: Array<string>,
-    newStateId: number
+    newStateId: number,
+    text: string
   ): void {
-    const newDelta = new Delta(currentStateId, input, newStateId);
+    const newDelta = new Delta(currentStateId, input, newStateId, text);
     const newDeltas = this.deltas;
     // Validate is deterministic
     let isOk = true;
@@ -255,6 +261,7 @@ export class TuringMachineService {
   deleteAction(stateId: number): void {
     const state = this.getStateById(stateId);
     state?.actions.pop();
+    this.updateStatesSubject();
     this.redrawEmitter.emit();
     this.saveMachineState();
   }
@@ -396,6 +403,9 @@ export class TuringMachineService {
   }
 
   async performActions(): Promise<void> {
+    if (this.currentState === undefined) {
+      this.currentState = this.getInitialState();
+    }
     const currentActions = this.currentState?.actions ?? [];
     for (const [index, action] of currentActions.entries()) {
       console.log(action);
@@ -471,18 +481,28 @@ export class TuringMachineService {
           this.tape[this.head] = 'd';
           break;
         case Action.DECISION_YES:
-          // alert('Yes');
           this._snackBar.open('Yes', 'Close', {
             horizontalPosition: 'right',
             duration: 0,
           });
           break;
         case Action.DECISION_NO:
-          // alert('No');
           this._snackBar.open('No', 'Close', {
             horizontalPosition: 'right',
             duration: 0,
           });
+          break;
+        case Action.COPY:
+          const w = this.tape.reduce((newTape: string[], character) => {
+            if (character !== EMPTY_INPUT) {
+              newTape.push(character);
+            }
+            return newTape;
+          }, []);
+          const EMPTY_TAPE: string[] = []
+          this.tape = EMPTY_TAPE.concat(EMPTY_INPUT).concat(w).concat(EMPTY_INPUT).concat(w).concat(EMPTY_INPUT)
+          break;
+        case Action.SHIFT_RIGHT:
           break;
         default:
           if (!this._alphabet.has(action)) {
@@ -559,6 +579,13 @@ export class TuringMachineService {
   }
 
   async stepRun(): Promise<void> {
+    if (this.getInitialState() === undefined) {
+      this._snackBar.open('initial state missing','Close', {
+        horizontalPosition: 'right',
+        duration: 0,
+      });
+      return;
+    }
     await this.performActions();
     this.input = this.tape[this.head];
     if (this.currentState === undefined) {
@@ -587,18 +614,19 @@ export class TuringMachineService {
   }
 
   getInitialState(): State | undefined {
-    //return this.states.find((state: State) => {
-    //return state.type === 'initialState';
-    // })
-    return this.states[0];
+    return this.states.find((state: State) => {
+      return state.type === StateType.INITIAL_STATE;
+    });
   }
 
   moveHeadToStart(): void {
     this.head = 0;
+    this.saveMachineState();
   }
 
   moveHeadToEnd(): void {
     this.head = this.tape.length - 1;
+    this.saveMachineState();
   }
 
   moveHeadLeft(): void {
@@ -610,6 +638,7 @@ export class TuringMachineService {
       throw Error('unable to move further left');
     }
     this.head--;
+    this.saveMachineState();
   }
 
   moveHeadRight(): void {
@@ -618,6 +647,7 @@ export class TuringMachineService {
       // this.head++;
     }
     this.head++;
+    this.saveMachineState();
   }
 
   // Generate and download json with current state

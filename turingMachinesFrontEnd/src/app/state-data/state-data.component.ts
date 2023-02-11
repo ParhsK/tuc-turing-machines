@@ -13,6 +13,7 @@ export class StateDataComponent implements OnInit {
   state?: State;
   deltas: Delta[] = [];
   input: string = '';
+  text: string = '';
   nextStateId?: number;
   stateTypes: StateType[] = [
     StateType.INITIAL_STATE,
@@ -54,7 +55,7 @@ export class StateDataComponent implements OnInit {
       throw Error('undefined next node id');
     }
     console.log(this.state!.id, this.input.split(''), this.nextStateId)
-    this.turingMachine.addDelta(this.state!.id, this.input.split(''), this.nextStateId);
+    this.turingMachine.addDelta(this.state!.id, this.input.split(''), this.nextStateId, this.text);
   }
 
   onDeltaDeleteClicked(delta: Delta): void {
@@ -71,5 +72,15 @@ export class StateDataComponent implements OnInit {
 
   onStateDeleteClicked(stateId: number): void {
     this.turingMachine.deleteState(stateId);
+  }
+
+  onNotEqualButtonClicked(): void {
+    const notEqualSymbol = '\u2260';
+    this.text += notEqualSymbol;
+  }
+
+  onEmptyInputButtonClicked(): void {
+    const emptyInputSymbol = '\u2294';
+    this.text += emptyInputSymbol;
   }
 }

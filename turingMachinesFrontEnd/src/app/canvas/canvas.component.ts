@@ -46,6 +46,9 @@ export class CanvasComponent implements OnInit, AfterViewInit {
         this.redrawAllLines();
       }, 10);
     });
+    this.dialog.afterAllClosed.subscribe(() => {
+      this.redrawAllLines();
+    });
   }
 
   removeAllLines(): void {
@@ -116,9 +119,6 @@ export class CanvasComponent implements OnInit, AfterViewInit {
   }
 
   generateCaptionLabel(delta: Delta): string {
-    if (delta.text !== '') {
-      return delta.text;
-    }
     let missingCharacters = 0;
     let lastMissingCharacter = undefined;
     this.turingMachine._alphabet.forEach((character) => {
@@ -139,13 +139,14 @@ export class CanvasComponent implements OnInit, AfterViewInit {
       text = '\u2260' + replaceEmptyCharacter(lastMissingCharacter);
     }
 
+    if (delta.text !== '') {
+      text = delta.text;
+    }
     const options = {
       color: 'rgba(80, 0, 255, 1)',
-      // offset: [1000, 1000],
-      // color: 'rgb(255, 255, 255)',
-      // outlineColor: 'rgb(0, 0, 0)',
       fontWeight: 'bold',
-      lineOffset: 50,
+      // lineOffset: 50,
+      middleElement:text
     };
     return LeaderLine.captionLabel(text, options);
   }

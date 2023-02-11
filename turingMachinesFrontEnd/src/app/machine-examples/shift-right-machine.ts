@@ -26,9 +26,9 @@ export const shiftRightMachine = {
     ),
   ],
   deltas: [
-    new Delta(0, ['a', 'b'], 1, 'grid'),
-    new Delta(1, ['a', 'b', EMPTY_INPUT], 0, 'grid', 'top', 'top'),
-    new Delta(0, [EMPTY_INPUT], 2, 'grid', 'bottom', 'top'),
+    new Delta(0, ['a', 'b'], 1, '', 'grid', 'right', 'left'),
+    new Delta(1, ['a', 'b', EMPTY_INPUT], 0, '', 'grid', 'top', 'top'),
+    new Delta(0, [EMPTY_INPUT], 2, '', 'grid', 'bottom', 'top'),
   ],
   tape: [EMPTY_INPUT, 'a', 'a', 'b', 'a', 'b', EMPTY_INPUT],
   head: 6,
