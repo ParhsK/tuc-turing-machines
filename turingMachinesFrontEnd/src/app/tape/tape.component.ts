@@ -10,11 +10,17 @@ import { replaceEmptyCharacter } from '../utils';
   styleUrls: ['./tape.component.css']
 })
 export class TapeComponent implements OnInit {
-  public replaceEmptyCharacter = replaceEmptyCharacter
+
+  head: number = 0;
+  public replaceEmptyCharacter = replaceEmptyCharacter;
 
   constructor(public turingMachine: TuringMachineService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.turingMachine.head$.subscribe((head) => {
+      this.head = head;
+      this.scrollToHead();
+    });
   }
 
   openDialog(): void {
@@ -22,8 +28,10 @@ export class TapeComponent implements OnInit {
   }
 
   scrollToHead() {
-    const head = document.getElementsByClassName('head')[0];
-    head.scrollIntoView();
+    console.log("scrolling to view", this.head);''
+    // const head = document.getElementsByClassName('head')[0]
+    const head = document.querySelector(`app-tape > div > div:nth-child(${this.head + 2})`);
+    console.log("head", head, `app-tape > div > div:nth-child(${this.head + 2})`)
+    head?.scrollIntoView();
   }
-
 }

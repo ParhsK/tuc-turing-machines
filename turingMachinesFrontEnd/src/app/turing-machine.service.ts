@@ -29,13 +29,17 @@ export class TuringMachineService {
   private alphabetChange$ = new BehaviorSubject<Set<string>>(this._alphabet);
   public alphabet$ = this.alphabetChange$.asObservable();
 
+  public _head: number = 0;
+  private headChange$ = new BehaviorSubject<number>(this._head);
+  public head$ = this.headChange$.asObservable();
+
   public stateDialogOpen = new EventEmitter();
   public redrawEmitter = new EventEmitter();
 
   public text: string | null = '';
   input = '';
   tape: Array<string> = [];
-  head = 0;
+  // head = 0;
   currentState?: State;
   currentDeltaIndex?: number;
   currentActionIndex = 0;
@@ -73,7 +77,7 @@ export class TuringMachineService {
       deltas: this.deltas,
       alphabet: Array.from(this._alphabet),
       tape: this.tape,
-      head: this.head,
+      head: this._head,
       text: this.text,
     });
   }
@@ -143,7 +147,7 @@ export class TuringMachineService {
     this._alphabet = new Set(machineState.alphabet);
     this.text = machineState.text;
     this.newTape(machineState.tape);
-    this.head = machineState.head;
+    this._head = machineState.head;
     this.saveMachineState();
   }
 
@@ -380,7 +384,8 @@ export class TuringMachineService {
       newTape = newTape.concat([EMPTY_INPUT]);
     }
     this.tape = newTape;
-    this.head = 0;
+    this._head = 0;
+    this.headChange$.next(this._head);
     this.saveMachineState();
     return this.tape;
   }
@@ -412,28 +417,31 @@ export class TuringMachineService {
       this.currentActionIndex = index;
       switch (action) {
         case Action.MOVE_RIGHT:
-          this.head++;
+          this._head++;
+          this.headChange$.next(this._head);
           break;
         case Action.MOVE_LEFT:
-          if (this.head === 0) {
+          if (this._head === 0) {
             this._snackBar.open('unable to move further left', 'Close', {
               horizontalPosition: 'right',
               duration: 0,
             });
             throw Error('unable to move further left');
           }
-          this.head--;
+          this._head--;
+          this.headChange$.next(this._head);
           break;
         case Action.SEARCH_RIGHT_EMPTY:
-          for (let i = this.head; i < this.tape.length; i++) {
+          for (let i = this._head; i < this.tape.length; i++) {
             if (this.tape[i + 1] === EMPTY_INPUT) {
-              this.head = i + 1;
+              this._head = i + 1;
+              this.headChange$.next(this._head);
               break;
             }
           }
           break;
         case Action.SEARCH_LEFT_EMPTY:
-          if (this.head === 0) {
+          if (this._head === 0) {
             this._snackBar.open(
               'unable to move further left, empty symbol was not found',
               'Close',
@@ -443,31 +451,34 @@ export class TuringMachineService {
               'unable to move further left, empty symbol was not found'
             );
           }
-          for (let i = this.head; i >= 0; i--) {
+          for (let i = this._head; i >= 0; i--) {
             if (this.tape[i - 1] === EMPTY_INPUT) {
-              this.head = i - 1;
+              this._head = i - 1;
+              this.headChange$.next(this._head);
               break;
             }
           }
           break;
         case Action.WRITE_EMPTY:
-          this.tape[this.head] = EMPTY_INPUT;
+          this.tape[this._head] = EMPTY_INPUT;
           break;
         case Action.WRITE_X:
-          this.tape[this.head] = this.input;
+          this.tape[this._head] = this.input;
           break;
         case Action.SEARCH_RIGHT_X:
-          for (let i = this.head; i < this.tape.length; i++) {
+          for (let i = this._head; i < this.tape.length; i++) {
             if (this.tape[i] === this.input) {
-              this.head = i;
+              this._head = i;
+              this.headChange$.next(this._head);
               break;
             }
           }
           break;
         case Action.SEARCH_LEFT_X:
-          for (let i = this.head; i <= 0; i--) {
+          for (let i = this._head; i <= 0; i--) {
             if (this.tape[i] === this.input) {
-              this.head = i;
+              this._head = i;
+              this.headChange$.next(this._head);
               break;
             }
           }
@@ -478,7 +489,7 @@ export class TuringMachineService {
           );
           throw Error('unable to move further left, symbol was not found');
         case Action.MARK:
-          this.tape[this.head] = 'd';
+          this.tape[this._head] = 'd';
           break;
         case Action.DECISION_YES:
           this._snackBar.open('Yes', 'Close', {
@@ -508,13 +519,13 @@ export class TuringMachineService {
           if (!this._alphabet.has(action)) {
             break;
           }
-          this.tape[this.head] = action;
+          this.tape[this._head] = action;
       }
       await sleep(500 - this.speed * 100);
     }
-    if (this.head > this.tape.length - 1) {
+    if (this._head > this.tape.length - 1) {
       const currentLength = this.tape.length;
-      const targetLength = this.head + 1;
+      const targetLength = this._head + 1;
       for (let i = currentLength; i <= targetLength; i++) {
         this.tape.push(' ');
       }
@@ -522,7 +533,7 @@ export class TuringMachineService {
     if (this.tape[this.tape.length - 1] !== ' ') {
       this.tape.push(' ');
     }
-    console.log(`Head is now at ${this.head}`);
+    console.log(`Head is now at ${this._head}`);
   }
 
   isSymbolUsed(symbol: string): boolean {
@@ -587,7 +598,7 @@ export class TuringMachineService {
       return;
     }
     await this.performActions();
-    this.input = this.tape[this.head];
+    this.input = this.tape[this._head];
     if (this.currentState === undefined) {
       this._snackBar.open('undefined current state', 'Close', {
         horizontalPosition: 'right',
@@ -620,33 +631,37 @@ export class TuringMachineService {
   }
 
   moveHeadToStart(): void {
-    this.head = 0;
+    this._head = 0;
+    this.headChange$.next(this._head);
     this.saveMachineState();
   }
 
   moveHeadToEnd(): void {
-    this.head = this.tape.length - 1;
+    this._head = this.tape.length - 1;
+    this.headChange$.next(this._head);
     this.saveMachineState();
   }
 
   moveHeadLeft(): void {
-    if (this.head === 0) {
+    if (this._head === 0) {
       this._snackBar.open('unable to move further left', 'Close', {
         horizontalPosition: 'right',
         duration: 0,
       });
       throw Error('unable to move further left');
     }
-    this.head--;
+    this._head--;
+    this.headChange$.next(this._head);
     this.saveMachineState();
   }
 
   moveHeadRight(): void {
-    if (this.head >= this.tape.length - 1) {
+    if (this._head >= this.tape.length - 1) {
       this.tape.push(' ');
       // this.head++;
     }
-    this.head++;
+    this._head++;
+    this.headChange$.next(this._head);
     this.saveMachineState();
   }
 
